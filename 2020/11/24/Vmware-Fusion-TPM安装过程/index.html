@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Vmware Fusion TPM安装过程 - Real Own</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chaos Chen"><meta name="msapplication-TileImage" content="/img/f7.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chaos Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="记录一次虚拟机安装TPM虚拟芯片的过程，以及安装Linux中与TPM相关的工具。"><meta property="og:type" content="blog"><meta property="og:title" content="Vmware Fusion TPM安装过程"><meta property="og:url" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/"><meta property="og:site_name" content="Real Own"><meta property="og:description" content="记录一次虚拟机安装TPM虚拟芯片的过程，以及安装Linux中与TPM相关的工具。"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/5.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/6.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/7.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/8.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/9.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/10.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/TSS_block_diagram.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210131231902193.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210131231954644.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201001840623.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201001953552.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/11.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171337585.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171535169.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171608710.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127180615827.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127181933311.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127192213248.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127192226286.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127193859192.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127194537684.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127200138803.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201005511315.png"><meta property="article:published_time" content="2020-11-24T12:36:53.000Z"><meta property="article:modified_time" content="2023-06-30T08:53:26.329Z"><meta property="article:author" content="Chaos Chen"><meta property="article:tag" content="TPM"><meta property="article:tag" content="Virtual Machine"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/5.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/"},"headline":"Vmware Fusion TPM安装过程","image":["https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/5.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/6.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/7.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/8.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/9.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/10.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/TSS_block_diagram.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210131231902193.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210131231954644.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201001840623.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201001953552.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/11.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171337585.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171535169.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171608710.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127180615827.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127181933311.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127192213248.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127192226286.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127193859192.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127194537684.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127200138803.png","https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201005511315.png"],"datePublished":"2020-11-24T12:36:53.000Z","dateModified":"2023-06-30T08:53:26.329Z","author":{"@type":"Person","name":"Chaos Chen"},"publisher":{"@type":"Organization","name":"Real Own","logo":{"@type":"ImageObject","url":"https://rlyown.github.io/img/f7.png"}},"description":"记录一次虚拟机安装TPM虚拟芯片的过程，以及安装Linux中与TPM相关的工具。"}</script><link rel="canonical" href="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/"><link rel="alternate" href="/atom.xml" title="Real Own" type="application/atom+xml"><link rel="icon" href="/img/f7.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Rlyown/rlyown.github.io"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catálogo" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Buscar" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Publicado hace&nbsp;<time dateTime="2020-11-24T12:36:53.000Z" title="11/24/2020, 8:36:53 PM">2020-11-24</time></span><span class="level-item">Actualizado hace&nbsp;<time dateTime="2023-06-30T08:53:26.329Z" title="6/30/2023, 4:53:26 PM">2023-06-30</time></span><span class="level-item"><a class="link-muted" href="/categories/Trusted-Computing/">Trusted Computing</a></span><span class="level-item">15 minutes de lectura (Aproximadamente 2299 palabras)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visitas</span></div></div><h1 class="title is-3 is-size-4-mobile">Vmware Fusion TPM安装过程</h1><div class="content"><h2 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h2><ul>
+<li>虚拟机软件：Vmware Fusion版本–11.5.6</li>
+<li>系统镜像：Ubuntu-20.04.1-desktop-amd64</li>
+</ul>
+<h2 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h2><p>首先需要准备一个虚拟机，这里省略虚拟机的安装过程。安装好后进入虚拟机设置界面。</p>
+<p>这里特别说明，Vmware安装TPM芯片必须要使用<strong>UEFI</strong>作为启动固件，而不能使用传统的<strong>BIOS</strong>固件。所以选择高级(Advanced) - 固件类型(Firmware type) - UEFI。</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/5.png" class="">
+
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/6.png" class="">
+
+<p>然后再将TPM芯片所需的磁盘加密启用。选择“Encryption &amp; Restrictions”，选中启用加密，接着输入加密所需的口令，最后等待加密完成。</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/7.png" class="">
+
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/8.png" class="">
+
+<p>此时已经完成了TPM安装所需的前置条件，可以在添加设备中选择添加TPM（Trusted Platform Module）芯片。即可看到，目前TPM芯片已经成功添加到虚拟机中，启动虚拟机可使用。</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/9.png" class="">
+
+
+
+<h2 id="开机测试"><a href="#开机测试" class="headerlink" title="开机测试"></a>开机测试</h2><p>首先使用命令<code>dmesg | grep -i tpm </code>，查看当前虚拟机内使用的TPM版本。可以看到我的虚拟机使用的TPM芯片版本是2.0。因此使用诸如trousers、tpm-tools之类的工具会发生错误，这些工具仅支持TPM 1.2。</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/10.png" class="">
+
+<h3 id="Intel-实现"><a href="#Intel-实现" class="headerlink" title="Intel 实现"></a>Intel 实现</h3><p>对于TPM2.0则需要安装其支持的一些工具。<a target="_blank" rel="noopener" href="https://github.com/tpm2-software">tpm2-software</a>项目共包含四个项目：</p>
+<ul>
+<li>tpm2-tools：为用户提供使用TPM资源的相关命令</li>
+<li>tpm2-tss：这一个项目TPM 协议栈部分，一共分为两层，一为上层开发者提供和封装统一的调用接口，二为上层提供了访问底层硬件资源接口</li>
+<li>tpm2-abrmd：tm2-abrmd是一个后台进程，主要做TPM硬件资源管理．比如：当我们上层应用加载key的时候，不需要关心,TPM中是否还有空闲的key slot,因为tpm2-abrmd后台进程会帮助我们做，如果TPM中key slot不够用，那么就会把不用key交换出来，然后供当前访问的进程使用</li>
+<li>tpm2-tss-engine：这个是一个加密相关的engine，需要配合openssl使用</li>
+</ul>
+<p>各组件相关关系如下：</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/TSS_block_diagram.png" class="">
+
+<blockquote>
+<p>注意：tss2和tpm2-tools无关。</p>
+<p>tss2是ibm实现，其软件仓库为<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmtpm20tss/%E3%80%82">https://sourceforge.net/projects/ibmtpm20tss/。</a></p>
+<p>而tpm2-tools是intel实现，其软件仓库为<a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tools%E3%80%82">https://github.com/tpm2-software/tpm2-tools。</a></p>
+<p>tpm2-tools所对应的tpm2-tss的软件仓库为<a target="_blank" rel="noopener" href="https://gitub.com/tpm2-software/tpm2-tss%E3%80%82">https://gitub.com/tpm2-software/tpm2-tss。</a></p>
+</blockquote>
+<p>tpm2-tools相关命令如下：</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210131231902193.png" class="">
+
+<p>tss2不仅包含TCG软件栈，也包含相关的工具如下：</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210131231954644.png" class="">
+
+
+
+<blockquote>
+<p>注：如果不像完整软件栈，仅想体验用户态工具tpm2-tools的一些功能，那么在Ubuntu中直接使用<code>apt install tpm2-tools</code>安装即可使用。</p>
+</blockquote>
+<ul>
+<li><p>首先安装tpm2-tss。具体安装步骤参见<a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tss/blob/master/INSTALL.md%E3%80%82">https://github.com/tpm2-software/tpm2-tss/blob/master/INSTALL.md。</a></p>
+</li>
+<li><p>然后安装tpm2-tss-engine（openssl相关的引擎）。具体安装步骤参见<a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tss-engine/blob/master/INSTALL.md%E3%80%82">https://github.com/tpm2-software/tpm2-tss-engine/blob/master/INSTALL.md。</a></p>
+<p>使用命令<code>openssl engine -t -c tpm2tss</code>确认安装。</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201001840623.png" class="">
+
+<p>然后测试产生16进制随机数</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201001953552.png" class="">
+</li>
+<li><p>接着安装tpm2-abrmd。具体安装步骤见<a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-abrmd/blob/master/INSTALL.md%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%8D%9A%E5%AE%A2https://blog.csdn.net/jianming21/article/details/108035041#tpm2abmrd_120%E3%80%82">https://github.com/tpm2-software/tpm2-abrmd/blob/master/INSTALL.md，以及博客https://blog.csdn.net/jianming21/article/details/108035041#tpm2abmrd_120。</a></p>
+<p>如果出现如下错误提示，需要安装glib依赖<code>apt install libglib2.0-dev</code>。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (gio-unix-2.0) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;gio-unix-2.0&#x27;</span> found</span><br></pre></td></tr></table></figure>
+
+<p>另外，为了保证服务正确启动，向configure提供以下参数。tpm2-abrmd.service默认会安装在&#x2F;usr&#x2F;local&#x2F;lib&#x2F;systemd&#x2F;system。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --with-dbuspolicydir=/etc/dbus-1/system.d --with-systemdsystemunitdir=/lib/systemd/system</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后是tpm2-tools的安装。具体步骤见<a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tools/blob/master/doc/INSTALL.md%E3%80%82">https://github.com/tpm2-software/tpm2-tools/blob/master/doc/INSTALL.md。</a></p>
+</li>
+</ul>
+<p>至此TPM芯片以及相关工具的安装已经完成，下文将简述一些tpm2-tools的功能测试。如果需要进一步了解TPM2.0的远程证明，参考官方教程<a target="_blank" rel="noopener" href="https://tpm2-software.github.io/2020/06/12/Remote-Attestation-With-tpm2-tools.html#tools-and-utilities-used-from-the-tpm2-tools-project">Remote Attestation With Tpm2 Tools</a>。</p>
+<h3 id="pcrread测试"><a href="#pcrread测试" class="headerlink" title="pcrread测试"></a>pcrread测试</h3><p>工具安装完成后，使用<code>tpm2_pcrread sha1:0,1,2+sha256:0,1,2</code>命令来查看0、1、2号PCR在sha1和sha256下的值。</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/11.png" class="">
+
+<h3 id="seal测试"><a href="#seal测试" class="headerlink" title="seal测试"></a>seal测试</h3><p>1. </p>
+   <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tpm2_createprimary -c primary.ctx</span><br></pre></td></tr></table></figure>
+
+<p>   用该命令来创建一个主对象保存到文件primary.ctx中，该主对象的默认层级为<code>TPM_RH_OWNER</code>。</p>
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171337585.png" class="">
+
+<p>2. </p>
+   <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tpm2_pcrread -o pcr.bin sha256:0,1,2,3</span><br></pre></td></tr></table></figure>
+
+<p>   读取sha256 bank下的0-3四个PCR寄存器的值，并保存到pcr.bin文件中。</p>
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171535169.png" class="">
+
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127171608710.png" class="">
+
+<p>3. </p>
+   <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tpm2_createpolicy --policy-pcr -l sha256:0,1,2,3 -f pcr.bin -L pcr.policy</span><br></pre></td></tr></table></figure>
+
+<p>   基于跨多个bank的多PCR索引值，创建简单的断言授权策略。</p>
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127180615827.png" class="">
+
+<p>4. </p>
+   <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;secret&#x27;</span> | tpm2_create -C primary.ctx -L pcr.policy -i- -u seal.pub -r seal.priv -c seal.ctx</span><br></pre></td></tr></table></figure>
+
+<p>   使用tpm2_create创建一个key或sealing的子对象。此外，sealing对象允许seal最大128字节的用户数据到tpm。这条命令的作用就是利用<code>echo</code>将用户数据输出到<code>stdin</code>，然后通过tpm2_create的<code>-i</code>参数指定seal的输入为<code>-</code>（代表<code>stdin</code>）。</p>
+<hr>
+<p>   <strong>此时可能会出现如下错误</strong>。这个错误发生的原因是，某些TPM不支持<em>CreateLoaded</em>命令。在tpm2-tools中实现的<code>tpm2_create</code>命令中<code>-c</code>参数调用<code>CreateLoaded</code>，因此出现了问题。该问题的相关信息可以参考<a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tools/issues/2181">tpm2_unseal #2181</a>。</p>
+   <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WARNING:esys:src/tss2-esys/api/Esys_CreateLoaded.c:359:Esys_CreateLoaded_Finish() Received TPM Error </span><br><span class="line">ERROR:esys:src/tss2-esys/api/Esys_CreateLoaded.c:129:Esys_CreateLoaded() Esys Finish ErrorCode (0x000b0143) </span><br><span class="line">ERROR: Esys_CreateLoaded(0xB0143) - rmt:error(2.0): <span class="built_in">command</span> code not supported</span><br><span class="line">ERROR: Unable to run tpm2_create</span><br></pre></td></tr></table></figure>
+
+<p>   可以使用<code>tpm2_getcap commands | grep  TPM2\_CC\_Create</code> 命令来检查TPM是否支持。（注：getcap命令所查询的是TPM芯片所支持的命令，而非Linux终端中使用的用户命令）</p>
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127181933311.png" class="">
+
+<p>   如上图输出所示，本机的TPM支持的Create相关的命令仅有<code>TPM2_CC_CreatePrimary</code>和<code>TPM2_CC_Create</code>。</p>
+<p>   <strong>处理方式：</strong>使用<em>create</em>和<em>load</em>两个命令来模拟<em>createloaded</em>命令。借助<em>create</em>创建公私钥，再用<em>load</em>加载并输出子对象的上下文。</p>
+   <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;secret&#x27;</span> | tpm2_create -C primary.ctx -L pcr.policy -i- -u seal.pub -r seal.priv</span><br><span class="line">tpm2_load -C primary.ctx -u seal.pub -r seal.priv -c seal.ctx</span><br></pre></td></tr></table></figure>
+
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127192213248.png" class="">
+
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127192226286.png" class="">
+
+<p>5. </p>
+   <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tpm2_unseal -c seal.ctx -p pcr:sha256:0,1,2,3</span><br></pre></td></tr></table></figure>
+
+<p>   调用该命令解封数据，得到了之前seal的用户数据“secret”。</p>
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127193859192.png" class="">
+
+<p>   如果使用了错误或者发生了变化的PCR寄存器，则会出现如下错误：</p>
+   <img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127194537684.png" class="">
+
+<ol start="6">
+<li><p>重启计算机，再次执行步骤5，确认seal的数据是否丢失。</p>
+<p>这里发生了错误。该<em>seal-unseal</em>重启后产生的问题，在网上有较多的讨论，可以参见<a href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">参考资料</a>[10]。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WARNING:esys:src/tss2-esys/api/Esys_ContextLoad.c:279:Esys_ContextLoad_Finish() Received TPM Error </span><br><span class="line">ERROR:esys:src/tss2-esys/api/Esys_ContextLoad.c:93:Esys_ContextLoad() Esys Finish ErrorCode (0x000001df) </span><br><span class="line">ERROR: Esys_ContextLoad(0x1DF) - tpm:parameter(1):integrity check failed</span><br><span class="line">ERROR: Invalid item handle authorization</span><br><span class="line">ERROR: Unable to run tpm2_unseal</span><br></pre></td></tr></table></figure>
+
+<p><strong>处理方式：</strong>使用<em>createprimary</em>创建的primary对象是临时的，因此在unseal之前需要重建primary对象，并将其加载到TPM芯片中。之后再调用<em>unseal</em>成功获取了的用户数据。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tpm2_createprimary -c primary.ctx</span><br><span class="line">tpm2_load -C primary.ctx -u seal.pub -r seal.priv -c seal.ctx</span><br><span class="line">tpm2_unseal -c seal.ctx -p pcr:sha256:0,1,2,3</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210127200138803.png" class=""></li>
+</ol>
+<h2 id="IBM-实现（可选）"><a href="#IBM-实现（可选）" class="headerlink" title="IBM 实现（可选）"></a>IBM 实现（可选）</h2><p>IBM实现是基于软件TPM的，它共包含三个部分：<a href="ibmtpm20tss">ibmswtpm2</a>、<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmtpm20tss/">ibmtpm20tss</a>和<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmtpm20acs/">ibmtpm20acs</a>。此外它还需要安装一个Openssl的引擎<a target="_blank" rel="noopener" href="https://kernel.googlesource.com/pub/scm/linux/kernel/git/jejb/openssl_tpm2_engine/">openssl_tpm2_engine</a>。</p>
+<p>ibmtpm20tss需要ibmswtpm2的存在，其tss提供的工具均需要通过一个2321端口（ibm软件TPM守护进程的默认端口）来访问信息。</p>
+<img src="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/image-20210201005511315.png" class="">
+
+<p>（未测试）</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://tpm2-software.github.io/tutorials/">TPM2 Linux社区教程</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://docs.vmware.com/en/VMware-Fusion/11/com.vmware.fusion.using.doc/GUID-4EC58A68-BE9E-42F6-B005-4BB63AE5D85B.html">Create a Virtual Trusted Platform Module Device</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://build.opensuse.org/package/view_file/openSUSE:Factory/tpm2.0-tools/tpm2.0-tools.changes?expand=0">tpm2.0-tools命令变化日志</a></p>
+<p>[4] <a target="_blank" rel="noopener" href="https://www.mankier.com/package/tpm2-tools">tpm2.0-tools命令查询</a></p>
+<p>[5] <a target="_blank" rel="noopener" href="https://www.mankier.com/1/tpm2_unseal">https://www.mankier.com/1/tpm2_unseal</a></p>
+<p>[6] <a target="_blank" rel="noopener" href="https://www.mankier.com/1/tpm2_createprimary">https://www.mankier.com/1/tpm2_createprimary</a></p>
+<p>[7] <a target="_blank" rel="noopener" href="https://www.mankier.com/1/tpm2_createpolicy">https://www.mankier.com/1/tpm2_createpolicy</a></p>
+<p>[8] <a target="_blank" rel="noopener" href="https://www.mankier.com/1/tpm2_load">https://www.mankier.com/1/tpm2_load</a></p>
+<p>[9] <a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tools/issues/2181">https://github.com/tpm2-software/tpm2-tools/issues/2181</a></p>
+<p>[10] <a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tools/issues/1884">https://github.com/tpm2-software/tpm2-tools/issues/1884</a></p>
+<p>[11] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/58207654/tpm2-tools-seal-unseal-data-after-reboot">tpm2-tools seal-unseal data after reboot</a></p>
+<p>[12] <a target="_blank" rel="noopener" href="https://ml01.01.org/hyperkitty/list/tpm2@lists.01.org/thread/3O4CQKKRXFTUDSHADTGRYWHFJFWJBLYA/">tss2 vs tpm2-tss</a></p>
+<p>[13] <a target="_blank" rel="noopener" href="https://blog.csdn.net/jianming21/article/details/107942585">TPM模拟器和TPM2-TSS安装</a></p>
+<p>[14] <a target="_blank" rel="noopener" href="https://blog.csdn.net/jianming21/article/details/108035041">tpm模拟器与新版tpm2-tss\abrmd\tools安装</a></p>
+<p>[15] <a target="_blank" rel="noopener" href="https://blog.csdn.net/u012385733/article/details/81702952">TPM 协议栈和工具介绍</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Vmware Fusion TPM安装过程</p><p><a href="https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM安装过程/">https://rlyown.github.io/2020/11/24/Vmware-Fusion-TPM安装过程/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Chaos Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2020-11-24</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2023-06-30</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/TPM/">TPM</a><a class="link-muted mr-2" rel="tag" href="/tags/Virtual-Machine/">Virtual Machine</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">在TPM2.0下使用IMA/EVM</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/11/22/Nachos-Lab03-%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/"><span class="level-item">Nachos Lab03 同步机制</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comentarios</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "32664aa884fbf15a96f9f5b7227d739e",
+            repo: "rlyown.github.io",
+            owner: "Rlyown",
+            clientID: "0dc9a246a80c473e7d31",
+            clientSecret: "08612f9152910db6288e61191a4221bad6aea8e5",
+            admin: ["Rlyown"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catálogo</h3><ul class="menu-list"><li><a class="level is-mobile" href="#安装环境"><span class="level-left"><span class="level-item">1</span><span class="level-item">安装环境</span></span></a></li><li><a class="level is-mobile" href="#安装过程"><span class="level-left"><span class="level-item">2</span><span class="level-item">安装过程</span></span></a></li><li><a class="level is-mobile" href="#开机测试"><span class="level-left"><span class="level-item">3</span><span class="level-item">开机测试</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Intel-实现"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">Intel 实现</span></span></a></li><li><a class="level is-mobile" href="#pcrread测试"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">pcrread测试</span></span></a></li><li><a class="level is-mobile" href="#seal测试"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">seal测试</span></span></a></li></ul></li><li><a class="level is-mobile" href="#IBM-实现（可选）"><span class="level-left"><span class="level-item">4</span><span class="level-item">IBM 实现（可选）</span></span></a></li><li><a class="level is-mobile" href="#参考资料"><span class="level-left"><span class="level-item">5</span><span class="level-item">参考资料</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a><p class="is-size-7"><span>&copy; 2023 Chaos Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visitado por <span id="busuanzi_value_site_uv">0</span> usuarios</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-hans");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Volver arriba" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Este sitio web utiliza cookies para mejorar su experiencia.",
+          dismiss: "¡Entendido!",
+          allow: "Permitir cookies",
+          deny: "Descenso",
+          link: "Aprende más",
+          policy: "Política de cookies",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Teclea algo..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Teclea algo...","untitled":"(Sin título)","posts":"Entradas","pages":"Páginas","categories":"Categorías","tags":"Etiquetas"});
+        });</script></body></html>

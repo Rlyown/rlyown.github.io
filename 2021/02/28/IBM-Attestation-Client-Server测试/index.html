@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>IBM Attestation Client Server测试 - Real Own</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chaos Chen"><meta name="msapplication-TileImage" content="/img/f7.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chaos Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="使用IBMACS进行远程证实测试"><meta property="og:type" content="blog"><meta property="og:title" content="IBM Attestation Client Server测试"><meta property="og:url" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/"><meta property="og:site_name" content="Real Own"><meta property="og:description" content="使用IBMACS进行远程证实测试"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225203212832.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225171409848.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225171555425.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228155208688.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228155312348.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228134653791.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228140144804.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228141716578.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228231042178.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228131713676.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228231938204.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228232044345.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161433884.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161550910.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161658092.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210226152520873.png"><meta property="article:published_time" content="2021-02-28T08:23:40.000Z"><meta property="article:modified_time" content="2023-06-30T08:53:26.327Z"><meta property="article:author" content="Chaos Chen"><meta property="article:tag" content="TPM"><meta property="article:tag" content="Remote Attestation"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225203212832.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/"},"headline":"IBM Attestation Client Server测试","image":["https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225203212832.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225171409848.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225171555425.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228155208688.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228155312348.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228134653791.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228140144804.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228141716578.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228231042178.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228131713676.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228231938204.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228232044345.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161433884.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161550910.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161658092.png","https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210226152520873.png"],"datePublished":"2021-02-28T08:23:40.000Z","dateModified":"2023-06-30T08:53:26.327Z","author":{"@type":"Person","name":"Chaos Chen"},"publisher":{"@type":"Organization","name":"Real Own","logo":{"@type":"ImageObject","url":"https://rlyown.github.io/img/f7.png"}},"description":"使用IBMACS进行远程证实测试"}</script><link rel="canonical" href="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/"><link rel="alternate" href="/atom.xml" title="Real Own" type="application/atom+xml"><link rel="icon" href="/img/f7.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Rlyown/rlyown.github.io"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catálogo" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Buscar" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Publicado hace&nbsp;<time dateTime="2021-02-28T08:23:40.000Z" title="2/28/2021, 4:23:40 PM">2021-02-28</time></span><span class="level-item">Actualizado hace&nbsp;<time dateTime="2023-06-30T08:53:26.327Z" title="6/30/2023, 4:53:26 PM">2023-06-30</time></span><span class="level-item"><a class="link-muted" href="/categories/Trusted-Computing/">Trusted Computing</a></span><span class="level-item">15 minutes de lectura (Aproximadamente 2179 palabras)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visitas</span></div></div><h1 class="title is-3 is-size-4-mobile">IBM Attestation Client Server测试</h1><div class="content"><p>这里仅考虑了vTPM 2.0和 TPM  2.0 Emulator的两种情况。尽管编译时说明了1.2的处理，但是配置部分并未说明，详情可以见<a href="#%E7%9B%B8%E5%85%B3%E8%B5%84%E6%96%99">参考资料</a>的README。</p>
+<h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><ul>
+<li><p>Ubuntu 18.04.5</p>
+<p>在Vmware Fusion版本下安装的虚拟机，添加了vTPM芯片。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmswtpm2/">ibmswtpm2</a></p>
+<p>如果需要</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /opt/ibmtpm1637</span><br><span class="line"><span class="built_in">cp</span> ibmtpm1637.tar.gz /opt/ibmtpm1637</span><br><span class="line"><span class="built_in">cd</span> /opt/ibmtpm1637</span><br><span class="line"></span><br><span class="line">tar -zxvf ibmtpm1637.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> src</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /opt</span><br><span class="line"><span class="built_in">ln</span> -s ibmtpm1637 ibmtpm</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmtpm20tss/">ibmtpm20tss</a></p>
+<p>TPM TSS</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /opt/ibmtss160/</span><br><span class="line"><span class="built_in">cp</span> ibmtss1.6.0.tar.gz /opt/ibmtss160/</span><br><span class="line"><span class="built_in">cd</span> /opt/ibmtss160/</span><br><span class="line"></span><br><span class="line">tar -zxvf ibmtss1.6.0.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 仅支持TPM 2.0</span></span><br><span class="line"><span class="built_in">cd</span> utils</span><br><span class="line">make -f makefiletpm20</span><br><span class="line"></span><br><span class="line"><span class="comment"># Or 同时支持TPM 2.0和TPM 1.2</span></span><br><span class="line"><span class="built_in">cd</span> utils</span><br><span class="line">make -f makefiletpmc</span><br><span class="line"><span class="built_in">cd</span> utils12</span><br><span class="line">make -f makefiletpmc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果拥有物理TPM则进行以下设置</span></span><br><span class="line"><span class="built_in">export</span> TPM_INTERFACE_TYPE=dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># or 如果没有物理TPM则使用以下设置</span></span><br><span class="line"><span class="built_in">export</span> TPM_INTERFACE_TYPE=socsim</span><br><span class="line"></span><br><span class="line"><span class="built_in">ln</span> -s /opt/ibmtss160 /opt/ibmtss</span><br></pre></td></tr></table></figure></li>
+<li><p><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmtpm20acs/">ibmtpm20acs</a></p>
+<p>IBM TPM Attestation Client Server</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /opt/ibmacs1658</span><br><span class="line"><span class="built_in">cp</span> ibmacs1658.tar.gz /opt/ibmacs1658</span><br><span class="line"><span class="built_in">cd</span> /opt/ibmacs1658</span><br><span class="line">tar -zxvf ibmacs1658.tar.gz </span><br><span class="line"><span class="built_in">cd</span> acs </span><br><span class="line"></span><br><span class="line">apt update</span><br><span class="line"></span><br><span class="line"><span class="comment"># 服务端 </span></span><br><span class="line">apt install libjson-c3 libjson-c-dev apache2 php php-dev php-mysql mysql-server libmysqlclient-dev libssl-dev </span><br><span class="line"></span><br><span class="line"><span class="comment">## 创建数据库 </span></span><br><span class="line">mysql</span><br><span class="line"><span class="comment"># mysql&gt; create database tpm2;</span></span><br><span class="line"><span class="comment"># mysql&gt; CREATE USER &#x27;tpm2ACS&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;123456&#x27;;</span></span><br><span class="line"><span class="comment"># mysql&gt; GRANT ALL ON tpm2.* to &#x27;tpm2ACS&#x27;@&#x27;localhost&#x27;;</span></span><br><span class="line">mysql -D tpm2 &lt; dbinit.sql  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 客户端 </span></span><br><span class="line">apt install libjson-c3 libjson-c-dev libssl-dev </span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置环境变量</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:/opt/ibmtss/utils:/opt/ibmtss/utils12</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/opt/ibmtss/utils:/opt/ibmtss/utils12</span><br><span class="line"></span><br><span class="line"><span class="built_in">ln</span> -s /opt/ibmacs1658/acs /opt/ibmacs</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Attestation-Demo"><a href="#Attestation-Demo" class="headerlink" title="Attestation Demo"></a>Attestation Demo</h2><blockquote>
+<p>因为实验涉及多个终端通信，请确保每个终端都配置好了上述的环境变量，尤其是<em>PATH</em>和<em>LD_LIBRARY_PATH</em></p>
+</blockquote>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># make会将网页相关的内容拷贝到该目录下</span></span><br><span class="line"><span class="built_in">mkdir</span> /var/www/html/acs</span><br><span class="line"><span class="built_in">chown</span> root /var/www/html/acs</span><br><span class="line"><span class="built_in">chgrp</span> root /var/www/html/acs</span><br><span class="line"><span class="built_in">chmod</span> 777 /var/www/html/acs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译ACS</span></span><br><span class="line"><span class="built_in">ln</span> -s /usr/include/json-c /usr/include/json</span><br><span class="line"></span><br><span class="line"><span class="comment">## For TPM 2.0 client and server</span></span><br><span class="line"><span class="built_in">export</span> CPATH=/opt/ibmtss/utils</span><br><span class="line"><span class="built_in">export</span> LIBRARY_PATH=/opt/ibmtss/utils</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line"><span class="comment">## Or For TPM 1.2 client (requires TPM 1.2 / TPM 2.0 server)</span></span><br><span class="line"><span class="built_in">export</span> CPATH=/opt/ibmtss/utils:/opt/ibmtss/utils12</span><br><span class="line"><span class="built_in">export</span> LIBRARY_PATH=/opt/ibmtss/utils:/opt/ibmtss/utils12</span><br><span class="line">make -f makefiletpm12</span><br><span class="line"></span><br><span class="line"><span class="comment">## Or For TPM 1.2 and TPM 2.0 client and TPM 1.2 / TPM 2.0 server</span></span><br><span class="line"><span class="built_in">export</span> CPATH=/opt/ibmtss/utils:/opt/ibmtss/utils12</span><br><span class="line"><span class="built_in">export</span> LIBRARY_PATH=/opt/ibmtss/utils:/opt/ibmtss/utils12</span><br><span class="line">make -f makefiletpmc</span><br></pre></td></tr></table></figure>
+
+<p>然后访问<code>localhost:80/acs</code>即可。</p>
+<p>这个时候可能会出现一些关于MySQL的错误，这是由于MySQL的一些环境变量没有设置好导致的。在<a href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1">启动服务</a>部分有相关的环境变量设置。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225203212832.png" class="">
+
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><h3 id="准备EK"><a href="#准备EK" class="headerlink" title="准备EK"></a>准备EK</h3><ul>
+<li>对于TPM模拟器，相关的CA证书，在软件安装的时候已经被创建了，不需要手动创建。如果想要修改相关证书，可以参照ibmacs的README.txt文件。</li>
+</ul>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225171409848.png" class="">
+
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210225171555425.png" class="">
+
+<p>此处仅需要为软件TPM创建EK证书。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 终端1</span></span><br><span class="line"><span class="built_in">cd</span> /opt/ibmtpm/src</span><br><span class="line">./tpm_server</span><br><span class="line"></span><br><span class="line"><span class="comment"># 终端2</span></span><br><span class="line"><span class="built_in">cd</span> /opt/ibmtss/utils</span><br><span class="line">./powerup</span><br><span class="line">./startup</span><br><span class="line"></span><br><span class="line"><span class="comment">## 由于这些证书是写在NV中的，因此可以事先将原来的NV备份</span></span><br><span class="line"><span class="built_in">cp</span> /opt/ibmtpm/src/NVChip /opt/ibmtpm/src/NVChip.bak</span><br><span class="line"></span><br><span class="line"><span class="comment">## 将RSA EK证书写入到NV中</span></span><br><span class="line">createekcert -rsa 2048 -cakey cakey.pem -capwd rrrr -v</span><br><span class="line"></span><br><span class="line"><span class="comment">## 将ECC EK证书写入到NV中</span></span><br><span class="line">createekcert -ecc nistp256 -cakey cakeyecc.pem -capwd rrrr -caalg ec -v</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228155208688.png" class="">
+
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228155312348.png" class="">
+
+<ul>
+<li>对于硬件TPM，则在其NV区域已经内置了EK证书。如果想要将其提取出来可以参照下列步骤：</li>
+</ul>
+<p>读取NV存储区内的EK证书信息，并将其保存到文件。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建RSA证书文件</span></span><br><span class="line">nvread -ha 01c00002 | awk <span class="string">&#x27;NR==1 &#123;next&#125; &#123;print&#125;&#x27;</span> | xxd -r -ps | <span class="built_in">base64</span> | sed -e <span class="string">&#x27;1i -----BEGIN CERTIFICATE-----&#x27;</span> -e <span class="string">&#x27;$a -----END CERTIFICATE-----&#x27;</span> &gt; VMW_EK_CACERT.pem</span><br><span class="line"></span><br><span class="line"><span class="comment"># 同理创建ECC证书文件</span></span><br><span class="line">nvread -ha 01c0000a | awk <span class="string">&#x27;NR==1 &#123;next&#125; &#123;print&#125;&#x27;</span> | xxd -r -ps | <span class="built_in">base64</span> | sed -e <span class="string">&#x27;1i -----BEGIN CERTIFICATE-----&#x27;</span> -e <span class="string">&#x27;$a -----END CERTIFICATE-----&#x27;</span> &gt; VMW_EKECC_CACERT.pem</span><br></pre></td></tr></table></figure>
+
+<p>上述命令的部分步骤解释及执行效果如下：</p>
+<ul>
+<li>从NV存储区读取出vTPM内置的EK证书</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 句柄地址01c00002</span></span><br><span class="line">nvread -ha 01c00002</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228134653791.png" class="">
+
+<ul>
+<li>读取的结果是打印字符，因此需要将其转化为pem的格式。awk命令用于删除第一行的“nvread: data length 1090”；xxd则用于将16进制字符串转化为二进制文件；base64则是对二进制数据进行编码。</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvread -ha 01c00002 | awk <span class="string">&#x27;NR==1 &#123;next&#125; &#123;print&#125;&#x27;</span> | xxd -r -ps | <span class="built_in">base64</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228140144804.png" class="">
+
+<ul>
+<li>尝试再为其添加开始和结束标签。用sed为其开头和结尾添加信息。</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvread -ha 01c00002 | awk <span class="string">&#x27;NR==1 &#123;next&#125; &#123;print&#125;&#x27;</span> | xxd -r -ps | <span class="built_in">base64</span> | sed -e <span class="string">&#x27;1i -----BEGIN CERTIFICATE-----&#x27;</span> -e <span class="string">&#x27;$a -----END CERTIFICATE-----&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228141716578.png" class="">
+
+
+
+<p>如果硬件TPM的EK证书提取失败，可能需要考虑</p>
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>服务器使用TPM作为加密协处理器。它必须指向不同的（通常是软件）TPM和TSS数据目录。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果服务器和客户端位于同一台机器</span></span><br><span class="line"><span class="built_in">mkdir</span> ~/tpm2</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> TPM_DATA_DIR=~/tpm2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果运行在不同的机器，则直接启动TPM Emulator即可</span></span><br><span class="line"><span class="comment"># vTPM不需要这些步骤</span></span><br><span class="line">/opt/ibmtpm/src/tpm_server</span><br><span class="line">/opt/ibmtss/utils/powerup</span><br><span class="line">/opt/ibmtss/utils/startup</span><br></pre></td></tr></table></figure>
+
+<p>编辑文件<code>/opt/ibmtss/utils/certificates/rootcerts.txt</code>。该文件是记录了CA根证书列表，server会根据这个列表来判断客户的TPM是否可信。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用vim进行全局替换</span></span><br><span class="line"><span class="comment"># :%s/\/gsa\/yktgsa\/home\/k\/g\/kgold\/tpm2/\/opt\/ibmtss/g</span></span><br></pre></td></tr></table></figure>
+
+<p>设置ACS端口</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ACS_PORT=2323</span><br></pre></td></tr></table></figure>
+
+<p>设置MySQL环境变量</p>
+<p>但这种方式可能失效，如果还是不起作用，可以<code>vim /var/www/html/acs/dbconnect.php</code>，修改<code>$connect = new mysqli(&quot;localhost&quot;, &quot;tpm2ACS&quot;, &quot;123456&quot;, &quot;tpm2&quot;); </code>。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ACS_SQL_HOST - defaults to localhost</span></span><br><span class="line"><span class="comment"># ACS_SQL_PORT - defaults to 0, MySQL will use its default</span></span><br><span class="line"><span class="comment"># ACS_SQL_USERID - defaults to current user</span></span><br><span class="line"><span class="comment"># ACS_SQL_PASSWORD - defaults to empty</span></span><br><span class="line"><span class="comment"># ACS_SQL_DATABASE - defaults to tpm2</span></span><br><span class="line"><span class="built_in">export</span> ACS_SQL_USERID=tpm2ACS</span><br><span class="line"><span class="built_in">export</span> ACS_SQL_PASSWORD=123456</span><br></pre></td></tr></table></figure>
+
+<p>启动服务</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /opt/ibmacs</span><br><span class="line"></span><br><span class="line">./server -v -root /opt/ibmtss/utils/certificates/rootcerts.txt -imacert imakey.der &gt;| serverenroll.log4j </span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="设置客户端"><a href="#设置客户端" class="headerlink" title="设置客户端"></a>设置客户端</h3><p>向证实服务器安装客户端的证实密钥证书。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /opt/ibmacs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果指定了ACS_DIR，那么客户端会在此处存放AK的公私钥</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地</span></span><br><span class="line">./clientenroll -alg rsa -v -ho localhost -co akcert.pem &gt;| clientenroll.log4j</span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程</span></span><br><span class="line">./clientenroll -alg ec -v -ho server_name -ma client_name -co akeccert.pem &gt;| clientenroll.log4j</span><br></pre></td></tr></table></figure>
+
+<p>图上的机器“chaos”代表的是，客户端和服务器位于同一设备；而“192.168.44.151”代表的是客户端和服务器位于不同设备。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228231042178.png" class="">
+
+
+
+<p>注册过程可能会出现错误。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228131713676.png" class="">
+
+<p>原因如下，说明该vTPM的Root CA证书不在服务器的合法TPM厂商列表中。</p>
+<blockquote>
+<p>The server validates the EK certificate against its list of TPM vendor root certificates.</p>
+<p>If the certificate is valid, the server trusts that the certificate came from an authentic TPM, but not that it came from the client’s TPM.</p>
+</blockquote>
+<p>处理方法如下：找到给TPM EK证书的CA证书，然后导入到合法TPM厂商列表中。</p>
+<h3 id="启动证实"><a href="#启动证实" class="headerlink" title="启动证实"></a>启动证实</h3><ul>
+<li><p>如果使用的是TPM模拟器，那么在其内的PCR寄存器是不会记录启动数据的，因此需要人为的将一些日志信息Extend到PCR中。同样IMA的信息也是需要人为Extend到PCR中。</p>
+</li>
+<li><p>但如果使用的是硬件TPM，那么可以忽略。此外，在<code>/sys/kernel/security/tpm0/binary_bios_measurements</code>可以获取TPM的BIOS度量日志；在<code>/sys/kernel/security/ima/binary_runtime_measurements</code>可以获取IMA的运行时度量日志。</p>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tpm2bios.log是一个的事件日志</span></span><br><span class="line">/opt/ibmtss/utils/eventextend -<span class="keyword">if</span> tpm2bios.log -tpm -v &gt;| b.log4j </span><br><span class="line"></span><br><span class="line"><span class="comment"># imasig.log是一个IMA日志</span></span><br><span class="line">/opt/ibmtss/utils/imaextend -<span class="keyword">if</span> imasig.log -le -v &gt;| i.log4j</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发起一个证实</span></span><br><span class="line"><span class="comment">## 本地</span></span><br><span class="line">./client -alg rsa -ifb tpm2bios.log -ifi imasig.log -ho localhost -v &gt;| client.log4j</span><br><span class="line"></span><br><span class="line"><span class="comment">## 远程</span></span><br><span class="line">./client -alg ec -ifb tpm2bios.log -ifi imasig.log -ho server_name -v -ma client_name &gt;| client.log4j</span><br></pre></td></tr></table></figure>
+
+<p>因为没有对IMA证书进行配置，因此这里出现了签名验证不通过的情况。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228231938204.png" class="">
+
+<p>失败的远程服务器的错误原因为，Quote信息和度量日志不匹配。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228232044345.png" class="">
+
+<h3 id="ACS-Web"><a href="#ACS-Web" class="headerlink" title="ACS Web"></a>ACS Web</h3><p>这里展示一些从ACS Web能够获取的信息。</p>
+<p>点击Report，可以获取到quote和签名信息。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161433884.png" class="">
+
+<p>点击BIOS Events，可以获取到度量日志。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161550910.png" class="">
+
+<p>点击IMA Events，可以获取到IMA度量日志。</p>
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210228161658092.png" class="">
+
+<h2 id="客户端的最小化安装"><a href="#客户端的最小化安装" class="headerlink" title="客户端的最小化安装"></a>客户端的最小化安装</h2><p>客户端仅有两个命令clientenroll和client。clientenroll用于向服务器注册，而client用于发起证实请求。</p>
+<p>最小化安装TSS。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果要安装在硬件TPM上</span></span><br><span class="line"><span class="built_in">cd</span> /opt/ibmtss/utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在CCFLAGS处添加-DTPM_NOSOCKET</span></span><br><span class="line">vim makefile.min</span><br><span class="line"></span><br><span class="line">make -f makefile.min</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/image-20210226152520873.png" class="">
+
+<p>最小化安装客户端</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /opt/ibmacs</span><br><span class="line">make client</span><br><span class="line">make clientenroll</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果要最小化安装服务端</span></span><br><span class="line"><span class="comment"># make server</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h2><p>[1] <a href="README.txt">IBM ACS README</a></p>
+<p>[2] <a href="AttestProv.pdf">AttestProv</a></p>
+<p>[3] <a href="IMA%20Log%20Format.doc">IMA Log Format</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>IBM Attestation Client Server测试</p><p><a href="https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server测试/">https://rlyown.github.io/2021/02/28/IBM-Attestation-Client-Server测试/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Chaos Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-02-28</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2023-06-30</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/TPM/">TPM</a><a class="link-muted mr-2" rel="tag" href="/tags/Remote-Attestation/">Remote Attestation</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/03/11/Kick-Start-Round-H-2020%E8%A7%A3%E9%A2%98%E8%AE%B0%E5%BD%95/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Kick Start Round H 2020解题记录</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/"><span class="level-item">TPM2.0 ECDAA方法测试</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comentarios</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "f096613d9895fbfcea35007ce08215ae",
+            repo: "rlyown.github.io",
+            owner: "Rlyown",
+            clientID: "0dc9a246a80c473e7d31",
+            clientSecret: "08612f9152910db6288e61191a4221bad6aea8e5",
+            admin: ["Rlyown"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catálogo</h3><ul class="menu-list"><li><a class="level is-mobile" href="#测试环境"><span class="level-left"><span class="level-item">1</span><span class="level-item">测试环境</span></span></a></li><li><a class="level is-mobile" href="#Attestation-Demo"><span class="level-left"><span class="level-item">2</span><span class="level-item">Attestation Demo</span></span></a></li><li><a class="level is-mobile" href="#相关配置"><span class="level-left"><span class="level-item">3</span><span class="level-item">相关配置</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#准备EK"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">准备EK</span></span></a></li><li><a class="level is-mobile" href="#启动服务"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">启动服务</span></span></a></li><li><a class="level is-mobile" href="#设置客户端"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">设置客户端</span></span></a></li><li><a class="level is-mobile" href="#启动证实"><span class="level-left"><span class="level-item">3.4</span><span class="level-item">启动证实</span></span></a></li><li><a class="level is-mobile" href="#ACS-Web"><span class="level-left"><span class="level-item">3.5</span><span class="level-item">ACS Web</span></span></a></li></ul></li><li><a class="level is-mobile" href="#客户端的最小化安装"><span class="level-left"><span class="level-item">4</span><span class="level-item">客户端的最小化安装</span></span></a></li><li><a class="level is-mobile" href="#相关资料"><span class="level-left"><span class="level-item">5</span><span class="level-item">相关资料</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a><p class="is-size-7"><span>&copy; 2023 Chaos Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visitado por <span id="busuanzi_value_site_uv">0</span> usuarios</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-hans");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Volver arriba" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Este sitio web utiliza cookies para mejorar su experiencia.",
+          dismiss: "¡Entendido!",
+          allow: "Permitir cookies",
+          deny: "Descenso",
+          link: "Aprende más",
+          policy: "Política de cookies",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Teclea algo..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Teclea algo...","untitled":"(Sin título)","posts":"Entradas","pages":"Páginas","categories":"Categorías","tags":"Etiquetas"});
+        });</script></body></html>

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>在TPM2.0下使用IMA/EVM - Real Own</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chaos Chen"><meta name="msapplication-TileImage" content="/img/f7.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chaos Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="记录如何在TPM2.0的环境下启用IMA&amp;#x2F;EVM的功能。"><meta property="og:type" content="blog"><meta property="og:title" content="在TPM2.0下使用IMA/EVM"><meta property="og:url" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/"><meta property="og:site_name" content="Real Own"><meta property="og:description" content="记录如何在TPM2.0的环境下启用IMA&amp;#x2F;EVM的功能。"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222140956569.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/1.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222163952889.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222164230872.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222192223645.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222195419579.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222203231543.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222203342145.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222210338268.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222155957365.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222160254972.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222160509780.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/3.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/4.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/5.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222150005013.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222150206881.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222151628631.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222151804779.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222153702435.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222153927327.png"><meta property="og:image" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222154441733.png"><meta property="article:published_time" content="2020-11-25T15:35:11.000Z"><meta property="article:modified_time" content="2023-06-30T08:53:26.323Z"><meta property="article:author" content="Chaos Chen"><meta property="article:tag" content="IMA/EVM"><meta property="article:tag" content="TPM"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222140956569.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/"},"headline":"在TPM2.0下使用IMA/EVM","image":["https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222140956569.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/1.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222163952889.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222164230872.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222192223645.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222195419579.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222203231543.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222203342145.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222210338268.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222155957365.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222160254972.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222160509780.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/3.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/4.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/5.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222150005013.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222150206881.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222151628631.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222151804779.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222153702435.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222153927327.png","https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222154441733.png"],"datePublished":"2020-11-25T15:35:11.000Z","dateModified":"2023-06-30T08:53:26.323Z","author":{"@type":"Person","name":"Chaos Chen"},"publisher":{"@type":"Organization","name":"Real Own","logo":{"@type":"ImageObject","url":"https://rlyown.github.io/img/f7.png"}},"description":"记录如何在TPM2.0的环境下启用IMA&#x2F;EVM的功能。"}</script><link rel="canonical" href="https://rlyown.github.io/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/"><link rel="alternate" href="/atom.xml" title="Real Own" type="application/atom+xml"><link rel="icon" href="/img/f7.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Rlyown/rlyown.github.io"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catálogo" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Buscar" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Publicado hace&nbsp;<time dateTime="2020-11-25T15:35:11.000Z" title="11/25/2020, 11:35:11 PM">2020-11-25</time></span><span class="level-item">Actualizado hace&nbsp;<time dateTime="2023-06-30T08:53:26.323Z" title="6/30/2023, 4:53:26 PM">2023-06-30</time></span><span class="level-item"><a class="link-muted" href="/categories/Trusted-Computing/">Trusted Computing</a></span><span class="level-item">35 minutes de lectura (Aproximadamente 5293 palabras)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visitas</span></div></div><h1 class="title is-3 is-size-4-mobile">在TPM2.0下使用IMA/EVM</h1><div class="content"><p>事情的起因是在根据<a target="_blank" rel="noopener" href="https://sourceforge.net/p/linux-ima/wiki/Home/">Integrity Measurement Architecture (IMA)</a>上所叙述的教程，来启用Linux上的IMA&#x2F;EVM模块。但是由于TPM2.0太新了，配置过程中涉及到TPM芯片的部分，指令无法正确执行。</p>
+<p><strong>特别说明，此处的测试均是以root用户来进行实验的，并未考虑普通用户使用时所涉及的功能效果以及权限问题。</strong></p>
+<h2 id="执行环境"><a href="#执行环境" class="headerlink" title="执行环境"></a>执行环境</h2><ul>
+<li>Ubuntu 20.04.1</li>
+<li>vmware虚拟TPM2.0</li>
+</ul>
+<p>如何在Vmware虚拟机中安装TPM芯片，参见教程<a href="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/" title="Vmware Fusion TPM安装过程">Vmware Fusion TPM安装过程</a></p>
+<h2 id="Ubuntu上开启IMA-x2F-EVM"><a href="#Ubuntu上开启IMA-x2F-EVM" class="headerlink" title="Ubuntu上开启IMA&#x2F;EVM"></a>Ubuntu上开启IMA&#x2F;EVM</h2><p>由于Ubuntu的内核中已经默认编译了IMA和EVM模块，因此不需要再手动重新编译内核。</p>
+<h3 id="IMA-x2F-EVM命令行参数"><a href="#IMA-x2F-EVM命令行参数" class="headerlink" title="IMA&#x2F;EVM命令行参数"></a>IMA&#x2F;EVM命令行参数</h3><p>根据Ubuntu一个较为久远的<a target="_blank" rel="noopener" href="https://wiki.strongswan.org/projects/strongswan/wiki/IMA">IMA wiki</a>中所描述的方式启用ima。首先打开<code>/etc/default/grub</code>文件，在里面找到<code>GRUB_CMDLINE_LINUX</code>参数。在这里添加Linux启动时的命令行参数，不同参数之间用空格分隔。（如果<code>GRUB_CMDLINE_LINUX</code> 内部已经有其他的参数，就在末尾添加，<strong>不要忘记空格</strong>）。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRUB_CMDLINE_LINUX=<span class="string">&quot;ima_tcb ima_appraise_tcb ima_appraise=fix evm=fix&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里介绍一下各个参数的含义（还有许多其他的参数，请参考文档<a target="_blank" rel="noopener" href="https://sourceforge.net/p/linux-ima/wiki/Home/">Integrity Measurement Architecture (IMA)</a>）：</p>
+<ul>
+<li><p>ima_policy</p>
+<p>指定内置策略。在Linux-4.13中默认值为无策略。此外该参数可以被指定多次，最终结果为多个参数的并集。</p>
+<p><strong>可选参数</strong>：</p>
+<ul>
+<li>tcb - 测量所有运行的可执行文件，所有要执行的mmap文件（例如共享库），所有内核模块以及所有固件。此外，还将测量打开供root用户读取的文件。</li>
+<li>appraise_tcb - 评估root拥有的所有文件。</li>
+<li>secure_boot - 评估所有加载的模块，固件，kexec’d kernel和IMA策略。它还要求他们也具有IMA签名。通常在“安全启动”方案中将其与内核中的CONFIG_INTEGRITY_TRUSTED_KEYRING选项一起使用，并通过固件从OEM或通过垫片中的MOK（Machine Owner Key）获得公钥。</li>
+</ul>
+</li>
+<li><p>ima_tcb<br>如果指定，则启用TCB策略，该策略可以满足Trusted Computing Base的需求。这意味着IMA将测量<em>所有已执行的程序</em>、<em>可执行程序的文件映射</em>以及<em>uid &#x3D; 0所打开供读取的所有文件</em>。</p>
+</li>
+<li><p>ima_appraise_tcb</p>
+<p>ima_appraise_tcb用于启用ima文件评估功能。IMA评估扩展针对存储为扩展属性<code>security.ima</code>的“良好”值添加了本地完整性验证和度量的实施。验证<code>security.ima</code>的初始方法是基于散列的，它提供了文件数据的完整性；而基于数字签名的除了提供文件数据的完整性之外，还提供了真实性。</p>
+</li>
+<li><p>ima_appraise&#x3D;fix </p>
+<p>在启用ima appraise功能时，与<code>ima_appraise_tcb</code>一同加入到命令行参数，会对文件系统进行标记（存储在拓展属性security.ima中）。标记结束后，可以删除该参数，仅保留<code>ima_appraise_tcb</code>参数。</p>
+<p><strong>可选参数</strong>：</p>
+<ul>
+<li>off - 是关闭完整性评估验证的运行时参数。</li>
+<li>enforce - 验证并加强运行时文件的完整性。 [默认参数]</li>
+<li>fix - 对于非数字签名的文件，更新<code>security.ima</code>拓展属性以反映现有的文件哈希。</li>
+<li>log - 与enforce类似，区别在于不会拒绝文件的访问，而是记录日志。</li>
+</ul>
+</li>
+<li><p>evm&#x3D;fix</p>
+<p>为了标记使用扩展属性<code>security.evm</code>现有文件系统，已定义了新的引导参数<code>evm = fix</code>。</p>
+</li>
+<li><p>ima_audit&#x3D;0</p>
+<p>信息性审核日志记录</p>
+<p><strong>可选参数</strong>：</p>
+<ul>
+<li>0 - 正常完整性审核消息。[默认参数]</li>
+<li>1 - 启用额外信息完整性审核消息。</li>
+</ul>
+</li>
+</ul>
+<p>修改完启动命令行参数后，使用如下命令更新自动生成文件更新<code>/boot/grub/grub.cfg</code>。然后重启电脑。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo update-grub</span><br></pre></td></tr></table></figure>
+
+<p><strong>EVM的使用还至少需要一个evm-key，因此在下文中继续EVM的设置。</strong></p>
+<h3 id="EVM受信任的加密密钥"><a href="#EVM受信任的加密密钥" class="headerlink" title="EVM受信任的加密密钥"></a>EVM受信任的加密密钥</h3><p>受信任的密钥要求具有受信任的平台模块（TPM）芯片以提供更高的安全性，而加密的密钥可以在任何系统上使用。即只有拥有TPM的平台上才能使用<code>trusted</code>方式来创建密钥。</p>
+<p>（如果没有TPM芯片，则可以使用用户的方式创建，具体的<a target="_blank" rel="noopener" href="https://sourceforge.net/p/linux-ima/wiki/Home/#creating-trusted-and-evm-encrypted-keys">Creating trusted and EVM encrypted keys</a>参照中的教程。这里因为没有测试，就不赘述了。）</p>
+<p>默认情况下，受信任和EVM快捷方式模块在<code>/etc/keys</code>中查找受信任和EVM加密的密钥。要创建并保存内核主密钥和EVM密钥。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ su -c <span class="string">&#x27;mkdir -p /etc/keys&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To create and save the kernel master key (trusted type):</span></span><br><span class="line">$ su -c <span class="string">&#x27;modprobe trusted encrypted&#x27;</span></span><br><span class="line">$ su -c <span class="string">&#x27;keyctl add trusted kmk-trusted &quot;new 32&quot; @u&#x27;</span></span><br><span class="line">$ su -c <span class="string">&#x27;keyctl pipe `keyctl search @u trusted kmk-trusted` &gt;/etc/keys/kmk-trusted.blob&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create the EVM encrypted key</span></span><br><span class="line">$ su -c <span class="string">&#x27;keyctl add encrypted evm-key &quot;new trusted:kmk-trusted 32&quot; @u&#x27;</span></span><br><span class="line">$ su -c <span class="string">&#x27;keyctl pipe `keyctl search @u encrypted evm-key` &gt;/etc/keys/evm-trusted.blob&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是在执行到命令<code>keyctl add trusted kmk-trusted &quot;new 32&quot; @u</code>时，可能会出现错误<code>add_key: Invalid argument</code>。尽管拥有TPM芯片，该错误依然会出现。解决方案可以参见Linux内核文档<a target="_blank" rel="noopener" href="https://www.kernel.org/doc/html/latest/security/keys/trusted-encrypted.html">Trusted and Encrypted Keys</a>。</p>
+<p><strong>对于TPM1.2</strong>：</p>
+<p>默认情况下，可信密钥在SRK下密封，该密钥具有默认授权值（20个零）。可以在trouser的工具<code>tpm_takeownership -u -z</code>中进行设置。因此对于TPM1.2上述创建EVM可信密钥的执行不会出现问题。</p>
+<p><strong>对于TPM2.0</strong>：</p>
+<p>用户必须首先创建一个存储密钥并使其持久化，以便该密钥在重新启动后可用。可以使用以下命令来完成。</p>
+<p>使用<em>IBM TSS 2 stack</em>（我的环境不适用这种方式，因此没有经过测试）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&gt; tsscreateprimary -hi o -st</span></span><br><span class="line">Handle 80000000</span><br><span class="line"><span class="comment">#&gt; tssevictcontrol -hi o -ho 80000000 -hp 81000001</span></span><br></pre></td></tr></table></figure>
+
+<p>或者使用<em>Intel TSS 2 stack</em>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&gt; tpm2_createprimary --hierarchy o -G rsa2048 -c key.ctxt</span></span><br><span class="line"><span class="comment">#&gt; tpm2_evictcontrol -c key.ctxt 0x81000001</span></span><br><span class="line">persistentHandle: 0x81000001</span><br></pre></td></tr></table></figure>
+
+<p>创建完之后将原先的可信密钥命令修改为<code>keyctl add trusted kmk-trusted &quot;new 32 keyhandle=0x81000001&quot; @u</code> ，即可。后续的命令照常执行。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222140956569.png" class="" title="可信密钥创建结果1">
+
+<p>在创建完evm-key之后，使用如下命令来启用evm。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1&quot;</span> &gt;/sys/kernel/security/evm</span><br></pre></td></tr></table></figure>
+
+<h2 id="IMA-x2F-EVM测试"><a href="#IMA-x2F-EVM测试" class="headerlink" title="IMA&#x2F;EVM测试"></a>IMA&#x2F;EVM测试</h2><h3 id="使用测试"><a href="#使用测试" class="headerlink" title="使用测试"></a>使用测试</h3><p>Ubuntu中默认挂载了securityfs伪文件系统，在<code>/sys/kernel/security</code>中。如果系统没有默认挂载则使用如下命令手动挂载。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t securityfs securityfs /sys/kernel/security</span><br></pre></td></tr></table></figure>
+
+<p>然后使用命令<code>more /sys/kernel/security/ima/ascii_runtime_measurements</code>查看ima模块存储的运行度量值。ima的度量日志格式可以参见<a href="#%E9%99%84%E5%BD%95A%EF%BC%9AIMA%E6%A8%A1%E7%89%88">附录A</a></p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/1.png" class="" title="IMA runtime measurements">
+
+<p>然后随意创建一个文件并保存，如<code>test2.txt</code>。之后再使用getfattr工具查看其拓展属性（如果没有这条命令，则使用<code>apt install attr</code>安装）。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222163952889.png" class="" title="security.evm和security.ima">
+
+<p>由于<code>ima_appraise=&#39;fix&#39;</code>参数的作用是重新标记系统，所以此时修改<code>test2.txt</code>的内容则，ima和evm相应的值也会发生改变。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222164230872.png" class="" title="security.evm和security.ima">
+
+<h3 id="IMA评估"><a href="#IMA评估" class="headerlink" title="IMA评估"></a>IMA评估</h3><p>首先使用<code>keyctl show</code>查看用户会话中已有的密钥。如果”kmk-trusted”和”eve-key”不存在，则使用下列命令添加。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&gt; keyctl add trusted kmk-trusted &quot;load `cat /etc/keys/kmk-trusted.blob` keyhandle=0x81000001&quot; @u</span></span><br><span class="line"><span class="comment">#&gt; keyctl add encrypted evm-key &quot;load `cat /etc/keys/evm-trusted.blob`&quot; @u</span></span><br><span class="line"><span class="comment">#&gt; echo &quot;1&quot; &gt;/sys/kernel/security/evm</span></span><br></pre></td></tr></table></figure>
+
+<p>创建一个文件text.txt，写入一些文字，然后查看其内存储的ima和evm值。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222192223645.png" class="" title="IMA&#x2F;EVM效果">
+
+<p>接着使用命令对所有文件进行标记。该方法执行耗时较长。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&gt; time find / -fstype ext4 -type f -uid 0 -exec dd if=&#x27;&#123;&#125;&#x27; of=/dev/null count=0 status=none \;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222195419579.png" class="" title="标记所有文件">
+
+<p>由于<code>ima_appraise=&#39;fix&#39;</code>参数的作用是重新标记系统，标记完之后修改为<code>ima_appraise=enforce</code>。则会使系统在使用存储的值之前对其进行验证。如果不匹配，则不会加载文件，对该文件的任何访问都将被拒绝，并显示“权限被拒绝”错误；如果启用了审核，则会生成审核事件。</p>
+<p>因此修改<code>/etc/default/grub</code>文件，将ima_appraise设为enforce，同时启用审核。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRUB_CMDLINE_LINUX=<span class="string">&quot;ima_tcb ima_appraise_tcb ima_appraise=enforce evm=fix ima_audit=0&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后再次执行<code>update-grub</code>并重启系统。</p>
+<p>然后修改text.txt中存储的ima的值为其他值。修改之后可以看到text.txt的访问被拒绝。同时在dmesg中记录了一条信息说明了错误的原因为”invalid-hash”。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222203231543.png" class="" title="篡改文件哈希">
+
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222203342145.png" class="" title="系统审计信息">
+
+<p>然后再测试命令<code>apt</code>，得到如下结果：</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222210338268.png" class="" title="缺少HMAC">
+
+<h3 id="测试工具验证（未完成）"><a href="#测试工具验证（未完成）" class="headerlink" title="测试工具验证（未完成）"></a>测试工具验证（未完成）</h3><p><strong>由于我的测试环境使用的是TPM 2.0，出现了错误<code>Error event too long PCR-00</code>，导致该工具测试未完成。以后有时间再选用TPM 1.2进行测试。</strong></p>
+<p>IMA测试程序是<a target="_blank" rel="noopener" href="https://github.com/linux-test-project/ltp/wiki">Linux Test Project.</a>的一部分。</p>
+<p>首先安装校验工具：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&gt; wget -O ltp-ima-standalone-v2.tar.gz http://downloads.sf.net/project/linux-ima/linux-ima/ltp-ima-standalone-v2.tar.gz</span></span><br><span class="line"><span class="comment">#&gt; tar -xvzf ltp-ima-standalone-v2.tar.gz</span></span><br><span class="line"><span class="comment">#&gt; cd ima-tests</span></span><br><span class="line"><span class="comment">#&gt; make</span></span><br><span class="line"><span class="comment">#&gt; make install</span></span><br></pre></td></tr></table></figure>
+
+<p>如果<code>make install</code>，出现如下图所示的结果，则说明install在了错误的位置。该命令应该放在某个bin目录下。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222155957365.png" class="" title="ltp-ima-standalone-v2安装错误">
+
+<p>因此修改ima-tests&#x2F;Makefile中的DESTDIR的值为<code>/usr/local/bin/</code>，如下图所示。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222160254972.png" class="" title="Makefile改动">
+
+<p>然后重新执行<code>make install</code>。安装成功后则有了三个命令行工具。</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222160509780.png" class="" title="ima工具">
+
+<h2 id="IMA-x2F-EVM数字签名"><a href="#IMA-x2F-EVM数字签名" class="headerlink" title="IMA&#x2F;EVM数字签名"></a>IMA&#x2F;EVM数字签名</h2><p>使用命令分别为ima和evm生成公私钥对，并放入到<code>/etc/keys/</code>目录下。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># generate unencrypted private key</span></span><br><span class="line">openssl genrsa -out privkey_evm.pem 1024</span><br><span class="line">openssl rsa -pubout -<span class="keyword">in</span> privkey_evm.pem -out pubkey_evm.pem</span><br><span class="line"></span><br><span class="line">openssl genrsa -out privkey_ima.pem 1024</span><br><span class="line">openssl rsa -pubout -<span class="keyword">in</span> privkey_ima.pem -out pubkey_ima.pem</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/3.png" class="" title="&#x2F;etc&#x2F;keys&#x2F;目录下的文件">
+
+<p>然后安装<code>ima-evm-utils</code>包，以获得工具evmctl。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install ima-evm-utils</span><br></pre></td></tr></table></figure>
+
+<p>接着使用evmctl工具将刚刚创建好的公钥导入到keyring中存储。如果不加参数<code>--rsa</code>，添加key会失败。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ima_id=`keyctl newring _ima @u`</span><br><span class="line">evmctl import --rsa /etc/keys/pubkey_ima.pem <span class="variable">$ima_id</span></span><br><span class="line"></span><br><span class="line">evm_id=`keyctl newring _evm @u`</span><br><span class="line">evmctl import --rsa /etc/keys/pubkey_evm.pem <span class="variable">$evm_id</span></span><br></pre></td></tr></table></figure>
+
+<p>然后对着之前的文件test.txt进行签名。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算文件hash存入security.ima，并且产生数字签名存入security.evm</span></span><br><span class="line">evmctl sign --imahash test.txt</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/4.png" class="" title="根据ima哈希计算得出的evm签名">
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算ima签名和evm签名</span></span><br><span class="line">evmctl sign --imasig test.txt</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/5.png" class="" title="计算ima签名并计算evm签名">
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 仅计算ima签名</span></span><br><span class="line">evmctl ima_sign test.txt</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文章涉及部分命令解释"><a href="#文章涉及部分命令解释" class="headerlink" title="文章涉及部分命令解释"></a>文章涉及部分命令解释</h2><h3 id="keyctl"><a href="#keyctl" class="headerlink" title="keyctl"></a><a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man1/keyctl.1.html">keyctl</a></h3><p>该命令程序用于控制密钥管理工具使用各种子命令的各种方式。</p>
+<ol>
+<li><p><code>keyctl add trusted kmk-trusted &quot;new 32 keyhandle=0x81000001&quot; @u</code></p>
+<ul>
+<li><p>对于可信密钥<code>keyctl add trusted name &quot;new keylen [options]&quot; ring</code>则有这种固定格式。</p>
+</li>
+<li><p>密钥类型为<code>trusted</code>，该类型仅有TPM芯片存在的情况下才能使用。</p>
+</li>
+<li><p>kmk-trusted是自定义的密钥描述，也即密钥的名字。</p>
+</li>
+<li><p><code>&quot;new 32 keyhandle=0x81000001&quot;</code>代表生成的可信密钥长度为32字节（可信密钥支持32-128字节，上限为2048位SRK（RSA）密钥长度，并带有所有必要的结构&#x2F;填充。）。<code>keyhandle=0x81000001</code>指向某一持久化密钥的句柄0x81000001。</p>
+</li>
+<li><p><code>@u</code>特殊的密钥环标识符，表示用户特定密钥环。该密钥环在特定用户拥有的所有进程之间共享。它不会直接搜索，但通常是从会话密钥环链接到的。</p>
+</li>
+<li><p>该命令的执行之后查看：</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222150005013.png" class="" title="添加可信密钥">
+
+<p>打印该密钥的值：</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222150206881.png" class="" title="可信密钥的值"></li>
+</ul>
+</li>
+<li><p><code>keyctl pipe &lt;key&gt;</code>：将源数据输出到标准输出流。</p>
+</li>
+<li><p><code>keyctl add encrypted evm-key &quot;new trusted:kmk-trusted 32&quot; @u</code></p>
+<ul>
+<li><p><code>encrypted</code>用于给密钥加密。加密密钥不依赖于TPM，并且速度更快，因为它们使用AES进行加密&#x2F;解密。 新密钥由内核生成的随机数创建，并使用指定的“主”密钥进行加密&#x2F;解密。  “主”密钥可以是受信任密钥或用户密钥类型。 加密密钥的主要缺点是，如果它们不根植于受信任的密钥中，则它们的安全性仅与加密它们的用户密钥一样安全。 因此，应该以一种尽可能安全的方式加载主用户密钥，最好在启动初期就加载。</p>
+</li>
+<li><p>该用法格式<code>keyctl add encrypted name &quot;new key-type:master-key-name keylen&quot; ring</code></p>
+</li>
+<li><p>执行后查看密钥</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222151628631.png" class="" title="evm密钥">
+
+<p>打印该密钥的值：</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222151804779.png" class="" title="evm密钥的值"></li>
+</ul>
+</li>
+</ol>
+<h3 id="tpm2-tools内的命令"><a href="#tpm2-tools内的命令" class="headerlink" title="tpm2-tools内的命令"></a>tpm2-tools内的命令</h3><ol>
+<li><p><code>tpm2_createprimary --hierarchy o -G rsa2048 -c key.ctxt</code></p>
+<ul>
+<li><p>tpm2_createprimary用于创建四种不同授权层次的主对象（Owner, Platform, Endorsement, NULL）。这条命令中<code>--hierarchy o</code>对应的层次为Owner。</p>
+</li>
+<li><p><code>-G</code>指定生成主密钥的算法</p>
+</li>
+<li><p><code>-c key.ctxt</code>表示保存生成的对象主内容</p>
+</li>
+<li><p>该命令执行结果如下：</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222153702435.png" class="" title="主对象生成执行结果">
+
+<p>其key.ctxt内部分内容如下图：</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222153927327.png" class="" title="key.ctxt内容"></li>
+</ul>
+</li>
+<li><p><code>tpm2_evictcontrol -c key.ctxt 0x81000001</code></p>
+<ul>
+<li><p>tpm2_evictcontrol用于创建或删除持久化对象。这条命令的作用就是将提供的临时对象存储到一个持久化的句柄<code>0x81000001</code>中。</p>
+</li>
+<li><p>如果一个对象是持久的，则该对象驻留在TPM中的持久句柄地址上。</p>
+</li>
+<li><p>使用<code>tpm2_readpublic</code>（用于读取公共区域的对象）读取句柄内的值</p>
+<img src="/2020/11/25/%E5%9C%A8TPM2-0%E4%B8%8B%E4%BD%BF%E7%94%A8IMA-EVM/image-20201222154441733.png" class="" title="句柄0x81000001的值"></li>
+</ul>
+</li>
+</ol>
+<h2 id="附录A：IMA模版"><a href="#附录A：IMA模版" class="headerlink" title="附录A：IMA模版"></a>附录A：IMA模版</h2><p><strong>注：以下均内容均在内核版本v5.4.120下进行叙述，不同的内核版本细节上可能存在差异。</strong></p>
+<p>模版代表了IMA度量日志的输出格式，以一条来自ascii_runtime_measurements的记录为例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10 972d62ff5b3a74e89952e0980b2099eed49bf8f0 ima-ng sha1:e9002ba6c5a98f5b7a33dc6bbf9ac1863873b713 /init</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>当前条目关联的PCR寄存器：10</li>
+<li>当前模版的哈希值（默认SHA1）：972d62ff5b3a74e89952e0980b2099eed49bf8f0</li>
+<li>当前模版名称：ima-ng</li>
+<li>模版相关数据：sha1:e9002ba6c5a98f5b7a33dc6bbf9ac1863873b713</li>
+<li>模版相关数据：&#x2F;init</li>
+</ul>
+<p>这其中前三者，也即PCR、模版哈希、模版名称，是必须的，而之后的模版相关数据则是根据不同模版规则来记录。除此之外，模版哈希的计算也会因为不同的模版而存在差异。</p>
+<h3 id="模版管理机制"><a href="#模版管理机制" class="headerlink" title="模版管理机制"></a>模版管理机制</h3><p>原始ima模版是固定长度的，包含文件哈希（固定20字节）和路径名（最大长度不超过255字节）。为了克服这个限制，并且添加额外的元数据（如LSM标签），需要定义新的模版。但是每次定义新的模版都需要编写额外的生成和显示额外数据的代码，为避免代码显著增长，引入模版管理机制来统一处理。</p>
+<blockquote>
+<p>ps：可以理解成采取多态的方式来处理不同模版的处理问题</p>
+</blockquote>
+<p>模版包含两个核心的数据结构<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.4.120/source/security/integrity/ima/ima.h#L86">模版描述符</a>，记录模版相关信息；以及<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.4.120/source/security/integrity/ima/ima.h#L77">模版字段</a>，用于生成和显示数据。除此之外，还有一个<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.4.120/source/security/integrity/ima/ima.h#L94">模版条目结构</a>，用于关联模版描述符和模版字段，并且实际记录模版字段的值。</p>
+<p>这里可能有点绕，结合源码说明一下。<code>struct ima_template_field</code>是模版字段的结构体，这里面记录了字段ID、用于初始化的函数指针、以及用于输出的函数指针。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ima_template_field</span> &#123;</span></span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> field_id[IMA_TEMPLATE_FIELD_ID_MAX_LEN];</span><br><span class="line">	<span class="type">int</span> (*field_init)(<span class="keyword">struct</span> ima_event_data *event_data,</span><br><span class="line">			  <span class="keyword">struct</span> ima_field_data *field_data);</span><br><span class="line">	<span class="type">void</span> (*field_show)(<span class="keyword">struct</span> seq_file *m, <span class="keyword">enum</span> ima_show_type show,</span><br><span class="line">			   <span class="keyword">struct</span> ima_field_data *field_data);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说在ima_template_field中不会实际存储字段的值，而是存储字段的类型以及对字段的操作。v5.4.120版本内核定义的字段ID有以下几类：</p>
+<ul>
+<li>“d”: 事件摘要，如被度量的文件摘要，使用SHA1或MD5计算</li>
+<li>“n”: 事件名称，如被度量的文件名，最大长度为255字节</li>
+<li>“d-ng”: 事件摘要，使用任意的哈希算法，以<code>[\&lt;hash algo&gt;:]digest</code>格式进行输出，仅当算法不是SHA1或MD5时输出前缀</li>
+<li>“d-modsig”: 未附加modsig的文件摘要</li>
+<li>“n-ng”: 无长度限制的事件名</li>
+<li>“sig”: 文件签名</li>
+<li>“modsig”:追加的文件签名</li>
+<li>“buf”: 用于生成没有大小限制的哈希的缓冲区数据</li>
+</ul>
+<p>模版描述符则决定了格式化输出的类型有哪些，定义的模版描述符有：</p>
+<ul>
+<li>“ima”：格式化”d|n”</li>
+<li>“ima-ng”：格式化”d-ng|n-ng”</li>
+<li>“Ima-sig”：格式化”d-ng|n-ng|sig”</li>
+<li>“ima-buf”：格式化”d-ng|n-ng|buf”</li>
+<li>“ima-modsig”：格式化”d-ng|n-ng|sig|d-modsig|modsig”</li>
+</ul>
+<p>接下来视角转到描述符和条目结构体，ima_template_field在ima_template_desc中是以一个指针数组进行存储的，该数组的下标与ima_template_entry中的template_data数组下标是一一对应的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ima_template_desc</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">list</span>;</span></span><br><span class="line">	<span class="type">char</span> *name;</span><br><span class="line">	<span class="type">char</span> *fmt;</span><br><span class="line">	<span class="type">int</span> num_fields;</span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">ima_template_field</span> **<span class="title">fields</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ima_template_entry</span> &#123;</span></span><br><span class="line">	<span class="type">int</span> pcr;</span><br><span class="line">	u8 digest[TPM_DIGEST_SIZE];	<span class="comment">/* sha1 or md5 measurement hash */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ima_template_desc</span> *<span class="title">template_desc</span>;</span> <span class="comment">/* template descriptor */</span></span><br><span class="line">	u32 template_data_len;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ima_field_data</span> <span class="title">template_data</span>[0];</span>	<span class="comment">/* template related data */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>本文虽然并不是以源码分析为主，但是提及上述三个结构体对接下来的模版哈希计算规则有帮助。</p>
+<h3 id="模版哈希"><a href="#模版哈希" class="headerlink" title="模版哈希"></a>模版哈希</h3><p>模版哈希是对模版条目内所具有的全部字段计算哈希。由函数ima_calc_field_array_hash_tfm（位于<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.4.120/source/security/integrity/ima/ima_crypto.c#L456"><em>security&#x2F;integrity&#x2F;ima&#x2F;ima_crypto.c</em></a>）可以看出，计算方式为：</p>
+<ul>
+<li>如果模版名不是”ima”，则先update字段长度，再update字段的值</li>
+<li>如果模版名为”ima”，则不会将字段长度加入到摘要中；并且由于”ima”模版要求事件名（如文件名）最大长度不超过255字节，因此会对事件名进行截断再进行计算。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">ima_calc_field_array_hash_tfm</span><span class="params">(<span class="keyword">struct</span> ima_field_data *field_data,</span></span><br><span class="line"><span class="params">					 <span class="keyword">struct</span> ima_template_desc *td,</span></span><br><span class="line"><span class="params">					 <span class="type">int</span> num_fields,</span></span><br><span class="line"><span class="params">					 <span class="keyword">struct</span> ima_digest_data *hash,</span></span><br><span class="line"><span class="params">					 <span class="keyword">struct</span> crypto_shash *tfm)</span></span><br><span class="line">&#123;</span><br><span class="line">	SHASH_DESC_ON_STACK(shash, tfm);</span><br><span class="line">	<span class="type">int</span> rc, i;</span><br><span class="line"></span><br><span class="line">	shash-&gt;tfm = tfm;</span><br><span class="line"></span><br><span class="line">	hash-&gt;length = crypto_shash_digestsize(tfm);</span><br><span class="line"></span><br><span class="line">	rc = crypto_shash_init(shash);</span><br><span class="line">	<span class="keyword">if</span> (rc != <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> rc;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; num_fields; i++) &#123;</span><br><span class="line">		u8 buffer[IMA_EVENT_NAME_LEN_MAX + <span class="number">1</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">		u8 *data_to_hash = field_data[i].data;</span><br><span class="line">		u32 datalen = field_data[i].len;</span><br><span class="line">		u32 datalen_to_hash =</span><br><span class="line">		    !ima_canonical_fmt ? datalen : cpu_to_le32(datalen);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">strcmp</span>(td-&gt;name, IMA_TEMPLATE_IMA_NAME) != <span class="number">0</span>) &#123;</span><br><span class="line">			rc = crypto_shash_update(shash,</span><br><span class="line">						(<span class="type">const</span> u8 *) &amp;datalen_to_hash,</span><br><span class="line">						<span class="keyword">sizeof</span>(datalen_to_hash));</span><br><span class="line">			<span class="keyword">if</span> (rc)</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(td-&gt;fields[i]-&gt;field_id, <span class="string">&quot;n&quot;</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="built_in">memcpy</span>(buffer, data_to_hash, datalen);</span><br><span class="line">			data_to_hash = buffer;</span><br><span class="line">			datalen = IMA_EVENT_NAME_LEN_MAX + <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		rc = crypto_shash_update(shash, data_to_hash, datalen);</span><br><span class="line">		<span class="keyword">if</span> (rc)</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!rc)</span><br><span class="line">		rc = crypto_shash_final(shash, hash-&gt;digest);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><p><a target="_blank" rel="noopener" href="https://sourceforge.net/p/linux-ima/wiki/Home/#verifying-ima-measurements">Integrity Measurement Architecture (IMA)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man1/keyctl.1.html">keyctl(1) — Linux manual page</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/security/keys-trusted-encrypted.txt">Trusted and Encrypted Keys</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.mankier.com/1/tpm2_createprimary">tpm2_createprimary - Man Page</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.mankier.com/1/tpm2_evictcontrol">tpm2_evictcontrol - Man Page</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://01.org/linuxgraphics/gfx-docs/drm/security/keys/ecryptfs.html">Encrypted keys for the eCryptfs filesystem</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://manpages.ubuntu.com/manpages/disco/man1/evmctl.1.html">evmctl - IMA&#x2F;EVM signing utility</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tools/blob/master/man/tpm2_readpublic.1.md">tpm2_readpublic.1</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://wiki.gentoo.org/wiki/Integrity_Measurement_Architecture">Integrity Measurement Architecture</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/ABI/testing/ima_policy">ima_policy</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.kernel.org/doc/html/v5.4/security/IMA-templates.html">IMA-templates</a></p>
+</li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>在TPM2.0下使用IMA/EVM</p><p><a href="https://rlyown.github.io/2020/11/25/在TPM2-0下使用IMA-EVM/">https://rlyown.github.io/2020/11/25/在TPM2-0下使用IMA-EVM/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Chaos Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2020-11-25</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2023-06-30</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/IMA-EVM/">IMA/EVM</a><a class="link-muted mr-2" rel="tag" href="/tags/TPM/">TPM</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/12/26/Nachos-Lab04-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Nachos Lab04 文件系统</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/"><span class="level-item">Vmware Fusion TPM安装过程</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comentarios</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "5071ca9699857ecd9cde4d759c9f6bea",
+            repo: "rlyown.github.io",
+            owner: "Rlyown",
+            clientID: "0dc9a246a80c473e7d31",
+            clientSecret: "08612f9152910db6288e61191a4221bad6aea8e5",
+            admin: ["Rlyown"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catálogo</h3><ul class="menu-list"><li><a class="level is-mobile" href="#执行环境"><span class="level-left"><span class="level-item">1</span><span class="level-item">执行环境</span></span></a></li><li><a class="level is-mobile" href="#Ubuntu上开启IMA-x2F-EVM"><span class="level-left"><span class="level-item">2</span><span class="level-item">Ubuntu上开启IMA/EVM</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#IMA-x2F-EVM命令行参数"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">IMA/EVM命令行参数</span></span></a></li><li><a class="level is-mobile" href="#EVM受信任的加密密钥"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">EVM受信任的加密密钥</span></span></a></li></ul></li><li><a class="level is-mobile" href="#IMA-x2F-EVM测试"><span class="level-left"><span class="level-item">3</span><span class="level-item">IMA/EVM测试</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#使用测试"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">使用测试</span></span></a></li><li><a class="level is-mobile" href="#IMA评估"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">IMA评估</span></span></a></li><li><a class="level is-mobile" href="#测试工具验证（未完成）"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">测试工具验证（未完成）</span></span></a></li></ul></li><li><a class="level is-mobile" href="#IMA-x2F-EVM数字签名"><span class="level-left"><span class="level-item">4</span><span class="level-item">IMA/EVM数字签名</span></span></a></li><li><a class="level is-mobile" href="#文章涉及部分命令解释"><span class="level-left"><span class="level-item">5</span><span class="level-item">文章涉及部分命令解释</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#keyctl"><span class="level-left"><span class="level-item">5.1</span><span class="level-item">keyctl</span></span></a></li><li><a class="level is-mobile" href="#tpm2-tools内的命令"><span class="level-left"><span class="level-item">5.2</span><span class="level-item">tpm2-tools内的命令</span></span></a></li></ul></li><li><a class="level is-mobile" href="#附录A：IMA模版"><span class="level-left"><span class="level-item">6</span><span class="level-item">附录A：IMA模版</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#模版管理机制"><span class="level-left"><span class="level-item">6.1</span><span class="level-item">模版管理机制</span></span></a></li><li><a class="level is-mobile" href="#模版哈希"><span class="level-left"><span class="level-item">6.2</span><span class="level-item">模版哈希</span></span></a></li></ul></li><li><a class="level is-mobile" href="#参考资料"><span class="level-left"><span class="level-item">7</span><span class="level-item">参考资料</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a><p class="is-size-7"><span>&copy; 2023 Chaos Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visitado por <span id="busuanzi_value_site_uv">0</span> usuarios</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-hans");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Volver arriba" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Este sitio web utiliza cookies para mejorar su experiencia.",
+          dismiss: "¡Entendido!",
+          allow: "Permitir cookies",
+          deny: "Descenso",
+          link: "Aprende más",
+          policy: "Política de cookies",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Teclea algo..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Teclea algo...","untitled":"(Sin título)","posts":"Entradas","pages":"Páginas","categories":"Categorías","tags":"Etiquetas"});
+        });</script></body></html>

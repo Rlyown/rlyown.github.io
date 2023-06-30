@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>在Ubuntu下配置libvirt - Real Own</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chaos Chen"><meta name="msapplication-TileImage" content="/img/f7.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chaos Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Libvirt的安装过程，及问题记录。"><meta property="og:type" content="blog"><meta property="og:title" content="在Ubuntu下配置libvirt"><meta property="og:url" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/"><meta property="og:site_name" content="Real Own"><meta property="og:description" content="Libvirt的安装过程，及问题记录。"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805232522976.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805232619297.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805233259624.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805233957981.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805234125054.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805234159712.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-46-54.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-47-15.png"><meta property="og:image" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-47-39.png"><meta property="article:published_time" content="2021-08-05T15:52:58.000Z"><meta property="article:modified_time" content="2023-06-30T08:53:26.350Z"><meta property="article:author" content="Chaos Chen"><meta property="article:tag" content="KVM/QEMU"><meta property="article:tag" content="Libvirt"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805232522976.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/"},"headline":"在Ubuntu下配置libvirt","image":["https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805232522976.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805232619297.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805233259624.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805233957981.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805234125054.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805234159712.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-46-54.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-47-15.png","https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-47-39.png"],"datePublished":"2021-08-05T15:52:58.000Z","dateModified":"2023-06-30T08:53:26.350Z","author":{"@type":"Person","name":"Chaos Chen"},"publisher":{"@type":"Organization","name":"Real Own","logo":{"@type":"ImageObject","url":"https://rlyown.github.io/img/f7.png"}},"description":"Libvirt的安装过程，及问题记录。"}</script><link rel="canonical" href="https://rlyown.github.io/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/"><link rel="alternate" href="/atom.xml" title="Real Own" type="application/atom+xml"><link rel="icon" href="/img/f7.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Rlyown/rlyown.github.io"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catálogo" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Buscar" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Publicado hace&nbsp;<time dateTime="2021-08-05T15:52:58.000Z" title="8/5/2021, 11:52:58 PM">2021-08-05</time></span><span class="level-item">Actualizado hace&nbsp;<time dateTime="2023-06-30T08:53:26.350Z" title="6/30/2023, 4:53:26 PM">2023-06-30</time></span><span class="level-item"><a class="link-muted" href="/categories/Virtualization/">Virtualization</a></span><span class="level-item">8 minutes de lectura (Aproximadamente 1200 palabras)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visitas</span></div></div><h1 class="title is-3 is-size-4-mobile">在Ubuntu下配置libvirt</h1><div class="content"><h2 id="安装Libvirt"><a href="#安装Libvirt" class="headerlink" title="安装Libvirt"></a>安装Libvirt</h2><p>主要参考<a href="#%E7%9B%B8%E5%85%B3%E8%B5%84%E6%96%99">相关资料</a>[1]。</p>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>检查CPU是否支持虚拟化。如果 CPU 支持硬件虚拟化，该命令将输出一个大于零的数字，即 CPU 内核数。否则，如果输出是，<code>0</code>则表示 CPU 不支持硬件虚拟化。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -Eoc <span class="string">&#x27;(vmx|svm)&#x27;</span> /proc/cpuinfo</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805232522976.png" class="">
+
+<p>检查内核是否启用了KVM</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod | grep -i kvm</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805232619297.png" class="">
+
+<h3 id="安装KVM"><a href="#安装KVM" class="headerlink" title="安装KVM"></a>安装KVM</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst virt-manager</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>qemu-kvm</code> - 为 KVM 管理程序提供硬件仿真的软件。</li>
+<li><code>libvirt-daemon-system</code> - 将 libvirt 守护进程作为系统服务运行的配置文件。</li>
+<li><code>libvirt-clients</code> - 用于管理虚拟化平台的软件。</li>
+<li><code>bridge-utils</code> - 一组用于配置以太网桥的命令行工具。</li>
+<li><code>virtinst</code> - 一组用于创建虚拟机的命令行工具。</li>
+<li><code>virt-manager</code> - 易于使用的 GUI 界面和支持命令行实用程序，用于通过 libvirt 管理虚拟机。</li>
+</ul>
+<p>安装完成之后，确认libvirtd的启动。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service libvirtd status</span><br></pre></td></tr></table></figure>
+
+<p>为了能够创建和管理虚拟机，需要将用户添加到<code>libvirt</code>和<code>kvm</code>组中。否则部分文件会提示Permission Denied。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -aG libvirt <span class="variable">$USER</span></span><br><span class="line">sudo usermod -aG kvm <span class="variable">$USER</span></span><br></pre></td></tr></table></figure>
+
+<p>注销并重新登录，以便更新组成员身份。</p>
+<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><p>在安装过程中会创建一个名为“virbr0”的网桥，该设备使用 NAT 将Guest连接到外部网络。使用下列命令查看：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brctl show</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805233259624.png" class="">
+
+<p>如果想要使用桥接模式，则需要额外配置。<a target="_blank" rel="noopener" href="https://help.ubuntu.com/community/KVM/Networking#Bridged_Networking">Bridged_Networking</a>。</p>
+<h3 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h3><p>从菜单栏点击Virtual Machine Manager程序，或者命令行输入virt-manager启动。</p>
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805233957981.png" class="">
+
+<ol>
+<li>点击File —&gt; New Virtual Machine；</li>
+</ol>
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805234125054.png" class="">
+
+<ol start="2">
+<li>下载ubuntu的镜像，然后这里选择本地的ISO文件；</li>
+</ol>
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image-20210805234159712.png" class="">
+
+<ol start="3">
+<li>选择 VM 的内存和 CPU 设置</li>
+</ol>
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-46-54.png" class="">
+
+<ol start="4">
+<li>为虚拟机创建磁盘镜像，选择虚拟机的磁盘空间大小</li>
+</ol>
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-47-15.png" class="">
+
+<ol start="5">
+<li>设置虚拟机的名字。此处可以勾选“Customize configuration before install”，这样就可以自定义虚拟机的硬件配置。勾选之后点击<em>finish</em>即可进入到自定义配置界面。</li>
+</ol>
+<img src="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/image_2021-08-05_23-47-39.png" class="">
+
+<p>至此虚拟机创建完成。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="问题1-Unable-to-connect-to-libvirt-qemu-x2F-x2F-x2F-system"><a href="#问题1-Unable-to-connect-to-libvirt-qemu-x2F-x2F-x2F-system" class="headerlink" title="问题1 - Unable to connect to libvirt qemu:&#x2F;&#x2F;&#x2F;system."></a>问题1 - Unable to connect to libvirt qemu:&#x2F;&#x2F;&#x2F;system.</h3><p>该问题的主要原因是用户权限问题。因为<em>libvirt-sock</em>文件的权限为660，用户组为<code>libvirt</code>，所以其他用户是没有读写权限的。</p>
+
+
+<p><strong>解决方法：</strong>二选一即可</p>
+<ul>
+<li><p>将当前用户加入到<code>libvirt</code>用户组。理论上注销即可生效，但在实际使用的时候，重启计算机才生效。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 通过usermod添加</span></span><br><span class="line">sudo usermod -aG libvirt &lt;username&gt;</span><br><span class="line">sudo usermod -aG kvm &lt;username&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Or 通过adduser添加</span></span><br><span class="line">sudo adduser &lt;username&gt; libvirt</span><br><span class="line">sudo adduser &lt;username&gt; kvm</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>直接修改该文件的权限为666</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">chmod</span> 666 /var/run/libvirt/libvirt-sock</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="问题2-Permission-denied"><a href="#问题2-Permission-denied" class="headerlink" title="问题2 - Permission denied"></a>问题2 - Permission denied</h3><p>在创建虚拟机的时候出现如下日志。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">internal error: Failed to start QEMU binary /usr/local/bin/qemu-system-x86_64 for probing libvirt: error : cannot execute binary /usr/local/bin/qemu-system-x86_64: Permission denied</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>这很有可能是<code>apparmor</code>安全模块导致的。参照<a href="#%E7%9B%B8%E5%85%B3%E8%B5%84%E6%96%99">相关资料</a>[4]中的描述进行检查。</p>
+<p>查看apparmor的使用情况</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo aa-status</span><br></pre></td></tr></table></figure>
+
+<p>如果输出中出现了下列内容，则说明libvirt正被apparmor保护。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">xx profiles are in enforce mode.</span><br><span class="line">...</span><br><span class="line">   /usr/sbin/libvirtd</span><br><span class="line">...</span><br><span class="line">xx processes are in enforce mode.</span><br><span class="line">   /usr/sbin/libvirtd</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>分别编辑*&#x2F;etc&#x2F;apparmor.d&#x2F;usr.sbin.libvirtd<em>和</em>&#x2F;etc&#x2F;apparmor.d&#x2F;abstractions&#x2F;libvirt-qemu*两个文件，加入如下内容（加入的可执行程序的路径，依据libvirt的错误日志填写）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">  ......</span><br><span class="line">  # qemu相关指令</span><br><span class="line">  /usr/bin/kvm rmix,</span><br><span class="line">  /usr/local/bin/qemu-system-sparc rmix,</span><br><span class="line">  /usr/local/bin/qemu-system-sparc64 rmix,</span><br><span class="line">  /usr/local/bin/qemu-system-x86_64 rmix,</span><br><span class="line">  /usr/local/bin/qemu-system-xtensa rmix,</span><br><span class="line">  /usr/local/bin/qemu-system-xtensaeb rmix,</span><br><span class="line">  /usr/local/bin/qemu-img rmix,</span><br><span class="line">  # swtpm相关指令</span><br><span class="line">  /usr/local/bin/swtpm rmix,</span><br><span class="line">  /usr/local/bin/swtpm_bios rmix,</span><br><span class="line">  /usr/local/bin/swtpm_cert rmix,</span><br><span class="line">  /usr/local/bin/swtpm_cuse rmix,</span><br><span class="line">  /usr/local/bin/swtpm_ioctl rmix,</span><br><span class="line">  /usr/local/bin/swtpm_setup rmix,</span><br><span class="line">  /usr/local/share/swtpm/swtpm-localca rmix,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>填写完成之后输入下列命令重新加载apparmor。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl reload apparmor</span><br></pre></td></tr></table></figure>
+
+<p>之后再次尝试创建虚拟机，成功创建。</p>
+<h2 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://linuxize.com/post/how-to-install-kvm-on-ubuntu-20-04/">How to Install Kvm on Ubuntu 20.04</a></li>
+<li><a target="_blank" rel="noopener" href="https://askubuntu.com/questions/932200/kvm-virt-manager-error-no-active-connection-to-installed-on">KVM Virt-Manager Error: No active connection to Installed on</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/S2536702672/article/details/103452253">KVM报错：Unable to connect to libvirt qemu:&#x2F;&#x2F;&#x2F;system. 确定 ‘libvirtd’ 守护进程正在运行</a></li>
+<li><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/471345/changing-libvirt-emulator-permission-denied">Changing libvirt emulator: Permission denied</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.qemu.org/Documentation/Networking">QEMU Networking</a></li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>在Ubuntu下配置libvirt</p><p><a href="https://rlyown.github.io/2021/08/05/在Ubuntu下配置libvirt/">https://rlyown.github.io/2021/08/05/在Ubuntu下配置libvirt/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Chaos Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-08-05</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2023-06-30</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/KVM-QEMU/">KVM/QEMU</a><a class="link-muted mr-2" rel="tag" href="/tags/Libvirt/">Libvirt</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/09/13/qemu%E6%90%AD%E9%85%8Drootfs%E5%90%AF%E5%8A%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8F%8A%E5%85%B6%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">qemu搭配rootfs启动虚拟机及其网络配置</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/07/19/Kick-Start-Round-E-2020%E8%A7%A3%E9%A2%98%E8%AE%B0%E5%BD%95/"><span class="level-item">Kick Start Round E 2020解题记录</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comentarios</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "1089e3d45a223955ca7cf7bdaa6c15c5",
+            repo: "rlyown.github.io",
+            owner: "Rlyown",
+            clientID: "0dc9a246a80c473e7d31",
+            clientSecret: "08612f9152910db6288e61191a4221bad6aea8e5",
+            admin: ["Rlyown"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catálogo</h3><ul class="menu-list"><li><a class="level is-mobile" href="#安装Libvirt"><span class="level-left"><span class="level-item">1</span><span class="level-item">安装Libvirt</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#准备"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">准备</span></span></a></li><li><a class="level is-mobile" href="#安装KVM"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">安装KVM</span></span></a></li><li><a class="level is-mobile" href="#网络"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">网络</span></span></a></li><li><a class="level is-mobile" href="#创建虚拟机"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">创建虚拟机</span></span></a></li></ul></li><li><a class="level is-mobile" href="#问题"><span class="level-left"><span class="level-item">2</span><span class="level-item">问题</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#问题1-Unable-to-connect-to-libvirt-qemu-x2F-x2F-x2F-system"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">问题1 - Unable to connect to libvirt qemu:///system.</span></span></a></li><li><a class="level is-mobile" href="#问题2-Permission-denied"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">问题2 - Permission denied</span></span></a></li></ul></li><li><a class="level is-mobile" href="#相关资料"><span class="level-left"><span class="level-item">3</span><span class="level-item">相关资料</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a><p class="is-size-7"><span>&copy; 2023 Chaos Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visitado por <span id="busuanzi_value_site_uv">0</span> usuarios</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-hans");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Volver arriba" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Este sitio web utiliza cookies para mejorar su experiencia.",
+          dismiss: "¡Entendido!",
+          allow: "Permitir cookies",
+          deny: "Descenso",
+          link: "Aprende más",
+          policy: "Política de cookies",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Teclea algo..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Teclea algo...","untitled":"(Sin título)","posts":"Entradas","pages":"Páginas","categories":"Categorías","tags":"Etiquetas"});
+        });</script></body></html>

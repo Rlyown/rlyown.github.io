@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>TPM2.0 ECDAA方法测试 - Real Own</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chaos Chen"><meta name="msapplication-TileImage" content="/img/f7.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chaos Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="使用网络上的相关工具对TPM2.0的DAA支持进行测试"><meta property="og:type" content="blog"><meta property="og:title" content="TPM2.0 ECDAA方法测试"><meta property="og:url" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/"><meta property="og:site_name" content="Real Own"><meta property="og:description" content="使用网络上的相关工具对TPM2.0的DAA支持进行测试"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210131213004143.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210131230409469.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218150906209.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218151406178.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218194226413.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218182557341.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211148227.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211917652.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211329648.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218213702839.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211740420.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218213810468.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218220123620.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218220201531.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218221445044.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218221700435.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220180958376.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220181118833.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220183908791.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185054715.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185229725.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185649179.png"><meta property="og:image" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185708470.png"><meta property="article:published_time" content="2021-02-20T11:03:07.000Z"><meta property="article:modified_time" content="2023-06-30T08:53:26.322Z"><meta property="article:author" content="Chaos Chen"><meta property="article:tag" content="TPM"><meta property="article:tag" content="Remote Attestation"><meta property="article:tag" content="DAA"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210131213004143.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/"},"headline":"TPM2.0 ECDAA方法测试","image":["https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210131213004143.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210131230409469.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218150906209.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218151406178.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218194226413.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218182557341.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211148227.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211917652.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211329648.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218213702839.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211740420.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218213810468.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218220123620.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218220201531.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218221445044.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218221700435.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220180958376.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220181118833.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220183908791.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185054715.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185229725.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185649179.png","https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185708470.png"],"datePublished":"2021-02-20T11:03:07.000Z","dateModified":"2023-06-30T08:53:26.322Z","author":{"@type":"Person","name":"Chaos Chen"},"publisher":{"@type":"Organization","name":"Real Own","logo":{"@type":"ImageObject","url":"https://rlyown.github.io/img/f7.png"}},"description":"使用网络上的相关工具对TPM2.0的DAA支持进行测试"}</script><link rel="canonical" href="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/"><link rel="alternate" href="/atom.xml" title="Real Own" type="application/atom+xml"><link rel="icon" href="/img/f7.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Rlyown/rlyown.github.io"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catálogo" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Buscar" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Publicado hace&nbsp;<time dateTime="2021-02-20T11:03:07.000Z" title="2/20/2021, 7:03:07 PM">2021-02-20</time></span><span class="level-item">Actualizado hace&nbsp;<time dateTime="2023-06-30T08:53:26.322Z" title="6/30/2023, 4:53:26 PM">2023-06-30</time></span><span class="level-item"><a class="link-muted" href="/categories/Trusted-Computing/">Trusted Computing</a></span><span class="level-item">18 minutes de lectura (Aproximadamente 2662 palabras)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visitas</span></div></div><h1 class="title is-3 is-size-4-mobile">TPM2.0 ECDAA方法测试</h1><div class="content"><h2 id="VTPM"><a href="#VTPM" class="headerlink" title="VTPM"></a>VTPM</h2><p>该方式是基于Vmware Fusion软件给虚拟机VM添加TPM设备。由于测试的物理机没有物理TPM设备，因此仅使用VTPM进行测试。</p>
+<h3 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h3><ul>
+<li><p>Ubuntu 20.04.1</p>
+</li>
+<li><p>vmware虚拟TPM2.0 </p>
+<p>如何在Vmware虚拟机中安装TPM芯片，参见教程<a href="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/" title="Vmware Fusion TPM安装过程">Vmware Fusion TPM安装过程</a></p>
+</li>
+<li><p>tpm2-software</p>
+<p>Intel实现的tpm2软件栈全家桶，安装方式见<a href="/2020/11/24/Vmware-Fusion-TPM%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/" title="Vmware Fusion TPM安装过程">Vmware Fusion TPM安装过程</a></p>
+</li>
+<li><p>(optional) xaptum&#x2F;ecdaa工具</p>
+<p>由于该工具的仓库存在搜索不到ecdaa工具的情况，在<a href="#xaptum/ecdaa%E6%96%B9%E5%BC%8F">xaptum&#x2F;ecdaa方式</a>部分讲解手动安装的方式。</p>
+</li>
+<li><p>(optional) ibm-research&#x2F;ecdaa方式</p>
+</li>
+</ul>
+<h3 id="TPM-直接匿名证明"><a href="#TPM-直接匿名证明" class="headerlink" title="TPM 直接匿名证明"></a>TPM 直接匿名证明</h3><p>从TPM 2.0的用户态工具<em>tpm2-tools</em>的手册[1]中可以看到，TPM2.0支持基于椭圆曲线加密方案的直接匿名证明ECDAA。</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210131213004143.png" class="">
+
+<p>然后在Ubuntu中检索相关的库，可以发现Ubuntu有不少关于ECDAA的编程库。</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210131230409469.png" class="">
+
+<h4 id="tpm2-tools方式（未完成）"><a href="#tpm2-tools方式（未完成）" class="headerlink" title="tpm2-tools方式（未完成）"></a>tpm2-tools方式（未完成）</h4><p>使用Intel实现的用户态工具实现。</p>
+<h4 id="ibm-research-x2F-ecdaa方式（未完成）"><a href="#ibm-research-x2F-ecdaa方式（未完成）" class="headerlink" title="ibm-research&#x2F;ecdaa方式（未完成）"></a>ibm-research&#x2F;ecdaa方式（未完成）</h4><p>这种方式是以Java语言实现的。</p>
+<h2 id="TPM-Emulator"><a href="#TPM-Emulator" class="headerlink" title="TPM-Emulator"></a>TPM-Emulator</h2><h3 id="测试环境-1"><a href="#测试环境-1" class="headerlink" title="测试环境"></a>测试环境</h3><ul>
+<li><p>Ubuntu 18.04.5</p>
+<p>为保证测试环境纯净，不会发生潜在的冲突，该VM内未添加TPM设备</p>
+</li>
+<li><p>Dependency：</p>
+<ul>
+<li><strong>common</strong>：gcc，make</li>
+<li>IBM-software：openssl</li>
+<li>UoS-SCCS&#x2F;ecc-daa：git，g++，libgmp3-dev</li>
+</ul>
+<p><code>apt install -y git gcc g++ make libssl-dev libgmp3-dev</code></p>
+</li>
+<li><p>IBM-software</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmswtpm2/files/ibmtpm1119.tar.gz/download">ibmtpm1119</a></p>
+<p>TPM Simulator</p>
+<figure class="highlight sh"><figcaption><span>安装方法</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /opt/ibmtpm1119</span><br><span class="line"><span class="built_in">cp</span> ibmtpm1119.tar.gz /opt/ibmtpm1119</span><br><span class="line"><span class="built_in">cd</span> /opt/ibmtpm1119</span><br><span class="line"></span><br><span class="line">gunzip ibmtpm1119.tar.gz</span><br><span class="line">tar -xvf ibmtpm1119.tar</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> src</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /opt</span><br><span class="line"><span class="built_in">ln</span> -s ibmtpm1119 ibmtpm</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmtpm20tss/files/ibmtss1119.tar.gz/download">ibmtss1119</a></p>
+<p>TSS以及TPM Simulator配套TPM用户态工具</p>
+<figure class="highlight sh"><figcaption><span>安装方式</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /opt/ibmtss1119</span><br><span class="line"><span class="built_in">cp</span> ibmtss1119.tar.gz /opt/ibmtss1119</span><br><span class="line"><span class="built_in">cd</span> /opt/ibmtss1119</span><br><span class="line"></span><br><span class="line">gunzip ibmtss1119.tar.gz</span><br><span class="line">tar -xvf ibmtss1119.tar</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> utils</span><br><span class="line"></span><br><span class="line">make</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /opt</span><br><span class="line"><span class="built_in">ln</span> -s ibmtss1119 ibmtss</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>设置文件权限</p>
+<p><code>chmod 755 -R /opt/ibmt*</code></p>
+</li>
+<li><p>设置路径</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为了能够在非root用户下执行代码，设置以下环境变量</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/opt/ibmtss/utils</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/opt/ibmtss/utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果拥有物理TPM则进行以下设置</span></span><br><span class="line"><span class="built_in">export</span> TPM_INTERFACE_TYPE=dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># or 如果没有物理TPM则使用以下设置</span></span><br><span class="line"><span class="built_in">export</span> TPM_INTERFACE_TYPE=socsim</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>UoS-SCCS&#x2F;ecc-daa方式</p>
+</li>
+</ul>
+<h4 id="TPM-Emulator安装测试"><a href="#TPM-Emulator安装测试" class="headerlink" title="TPM-Emulator安装测试"></a>TPM-Emulator安装测试</h4><p>另开一个新的终端窗口来启动TPM模拟器服务</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo /opt/ibmtpm/src/tpm_server  <span class="comment"># 启动服务</span></span><br><span class="line">/opt/ibmtss/utils/reg.sh -a  <span class="comment"># 调用测试脚本进行测试</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218150906209.png" class="">
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218151406178.png" class="">
+
+<h3 id="TPM-直接匿名证明-1"><a href="#TPM-直接匿名证明-1" class="headerlink" title="TPM 直接匿名证明"></a>TPM 直接匿名证明</h3><h4 id="UoS-SCCS-x2F-ecc-daa方式"><a href="#UoS-SCCS-x2F-ecc-daa方式" class="headerlink" title="UoS-SCCS&#x2F;ecc-daa方式"></a>UoS-SCCS&#x2F;ecc-daa方式</h4><p>该工具的实现不是很完善，仅能作为一个很简单的测试使用。</p>
+<p><strong>相关命令的详细解释见<a href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">参考资料</a>[11]。</strong></p>
+<h5 id="编译并配置"><a href="#编译并配置" class="headerlink" title="编译并配置"></a>编译并配置</h5><p>从github仓库拉去并编译该代码</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth=1 https://github.com/UoS-SCCS/ecc-daa.git</span><br><span class="line"><span class="built_in">cd</span> ecc-daa</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> $(<span class="built_in">pwd</span>)/bin</span><br><span class="line"></span><br><span class="line">./copy_programs.sh $(<span class="built_in">pwd</span>)/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果使用了TPM模拟器则拷贝tpm_server命令到bin目录下</span></span><br><span class="line"><span class="built_in">cp</span> /opt/ibmtpm/src/tpm_server $(<span class="built_in">pwd</span>)/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=$(<span class="built_in">pwd</span>)/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>ecc-daa提供了脚本来设置一些环境变量</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TPM模拟器</span></span><br><span class="line"><span class="built_in">source</span> ./setupForTPMSim.sh $(<span class="built_in">pwd</span>)/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 物理TPM</span></span><br><span class="line"><span class="built_in">source</span> ./setupForTPMSim.sh $(<span class="built_in">pwd</span>)/bin</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="测试执行"><a href="#测试执行" class="headerlink" title="测试执行"></a>测试执行</h5><p>开启两个终端，其中一个用于启用tpm服务，另一个用于测试。</p>
+<blockquote>
+<p>注意：由于直接使用export来注册的环境变量是临时的，仅对当前终端生效，并且会因为终端的关闭而被删除。因此需要对两个终端分别执行上述的环境变量注册；如果需要持久化，则将其写入到<code>.bashrc</code></p>
+</blockquote>
+<p>Terminals 1：启用tpm服务</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> ~/Daa_logs</span><br><span class="line"><span class="built_in">cd</span> /opt/ecc-daa  <span class="comment"># ecc-daa工具的根目录</span></span><br><span class="line">./start_newTPM.sh ~/Daa_logs  <span class="comment"># 指定~/Daa_logs目录来存储日志信息</span></span><br></pre></td></tr></table></figure>
+
+<p>Terminals 2：用于测试</p>
+<p>由于provision_tpm工具编写的原因，它需要一个固定的目录<code>/home/cn0016/TPM_data/</code>来存放数据。</p>
+<p>provision_tpm用于准备将要使用的TPM。它会创建<strong>RSA背书密钥</strong>，此外该命令还会写入PCR 23以进行TPM2_Quote测试。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建所需的文件夹</span></span><br><span class="line"><span class="built_in">mkdir</span> -p /home/cn0016/TPM_data/</span><br><span class="line"></span><br><span class="line">provision_tpm -s</span><br></pre></td></tr></table></figure>
+
+<p>上述命令执行完之后会创建两个二进制文件。</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218194226413.png" class="">
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218182557341.png" class="">
+
+<p>make_daa_credential将颁发者的公钥、Daa_key及其凭据写入文件。其中文件名中的<code>S</code>代表TPM模拟器，如果是物理TPM，则使用字母<code>T</code>；此外文件名最后的数字代表的是当前时间。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make_daa_credential -s -d ~/Daa_logs</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211148227.png" class="">
+
+<p>日志文件<code>Daa_S_cre_log_368538391</code>输出如下：</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211917652.png" class="">
+
+<p>读取凭据文件并使用存储在文件中的密钥和凭据对消息进行签名。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">daa_sign_message -d ~/Daa_logs -n Daa_S_cre_368538391</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211329648.png" class="">
+
+<p>日志文件<code>Daa_S_sign_no_bsn_log_368538391</code>内容如下：</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218213702839.png" class="">
+
+<p>verify_daa_signature命令会读取签名文件，验证签名并检查随机凭证。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">verify_daa_signature -d ~/Daa_logs Daa_S_sign_no_bsn_368538391</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218211740420.png" class="">
+
+<p>签名校验<code>Daa_S_sign_no_bsn_ver_368538391</code>结果如下：</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218213810468.png" class="">
+
+<p>daa_certify_key用于读取凭据文件，创建并加载ECDSA密钥，然后为其生成证书。密钥证书、基本名称（basename）、J点和K点、发行者的公钥、随机凭证和证书签名均存在文件中。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">daa_certify_key -d ~/Daa_logs -b Daa_S_cre_368538391</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218220123620.png" class="">
+
+<p>日志文件<code>Daa_S_certify_bsn_log_368538391</code>内容如下：</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218220201531.png" class="">
+
+<p>verify_daa_attest命令用于检查来自certify和quote程序的证明数据。证明数据中的签名和随机凭证部分一起被验证。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">verify_daa_attest -d ~/Daa_logs Daa_S_certify_bsn_368538391</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218221445044.png" class="">
+
+<p>证明的结果<code>Daa_S_certify_bsn_ver_368538391</code>如下：按照文档上的说法，此处应该出现一个*’Certify signature OK*。</p>
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210218221700435.png" class="">
+
+
+
+<h4 id="xaptum-x2F-ecdaa方式"><a href="#xaptum-x2F-ecdaa方式" class="headerlink" title="xaptum&#x2F;ecdaa方式"></a>xaptum&#x2F;ecdaa方式</h4><p>这种方式是以C语言实现的。</p>
+<p>签名和验证过程中，验证者还维护一个秘密密钥吊销列表，该列表列出了已知已被破坏的DAA秘密密钥。发行者可能会参与将此列表传达给所有验证者。此过程不在此项目的范围内。</p>
+<h5 id="编译并配置-1"><a href="#编译并配置-1" class="headerlink" title="编译并配置"></a>编译并配置</h5><p>安装教程：<a target="_blank" rel="noopener" href="https://github.com/xaptum/ecdaa/blob/master/doc/BUILDING.md">https://github.com/xaptum/ecdaa/blob/master/doc/BUILDING.md</a></p>
+<p>安装AMCL（Apache Milagro Cryptographic Library）。<strong>这个可以不手动安装，可以使用xaptum&#x2F;ecdaa提供的脚本进行安装。</strong></p>
+<figure class="highlight sh"><figcaption><span>安装AMCL</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取源代码</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/apache/incubator-milagro-crypto-c.git</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装相关依赖</span></span><br><span class="line">sudo apt-get update -y</span><br><span class="line">sudo apt-get install -y \</span><br><span class="line">     build-essential \</span><br><span class="line">     cmake \</span><br><span class="line">     doxygen \</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> incubator-milagro-crypto-c</span><br><span class="line"><span class="built_in">mkdir</span> -p target/build </span><br><span class="line"><span class="built_in">cd</span> target/build </span><br><span class="line">cmake -D CMAKE_INSTALL_PREFIX=/opt/amcl ../..</span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:./ </span><br><span class="line">make </span><br><span class="line">make <span class="built_in">test</span></span><br><span class="line">make doc</span><br><span class="line">sudo make install</span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:./:/opt/amcl/lib</span><br></pre></td></tr></table></figure>
+
+<p>安装tpm2-tss。<strong>这个可以不手动安装，可以使用xaptum&#x2F;ecdaa提供的脚本进行安装。</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/tpm2-software/tpm2-tss.git</span><br><span class="line">sudo apt -y update</span><br><span class="line">sudo apt -y install \</span><br><span class="line">  autoconf-archive \</span><br><span class="line">  libcmocka0 \</span><br><span class="line">  libcmocka-dev \</span><br><span class="line">  procps \</span><br><span class="line">  iproute2 \</span><br><span class="line">  build-essential \</span><br><span class="line">  git \</span><br><span class="line">  pkg-config \</span><br><span class="line">  gcc \</span><br><span class="line">  libtool \</span><br><span class="line">  automake \</span><br><span class="line">  libssl-dev \</span><br><span class="line">  uthash-dev \</span><br><span class="line">  autoconf \</span><br><span class="line">  doxygen \</span><br><span class="line">  libjson-c-dev \</span><br><span class="line">  libini-config-dev \</span><br><span class="line">  libcurl4-openssl-dev</span><br><span class="line">  </span><br><span class="line"><span class="built_in">cd</span> tpm2-tss</span><br><span class="line"></span><br><span class="line">./bootstrap</span><br><span class="line">./configure</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br><span class="line">sudo make install</span><br><span class="line"></span><br><span class="line">sudo udevadm control --reload-rules &amp;&amp; sudo udevadm trigger</span><br><span class="line">sudo ldconfig</span><br></pre></td></tr></table></figure>
+
+
+
+<p>安装ECDAA相关开发库（这个没安装成功也不影响执行）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y libecdaa-dev libecdaa-tpm0 libecdaa-tpm-dev</span><br></pre></td></tr></table></figure>
+
+
+
+<p>下载<a target="_blank" rel="noopener" href="https://github.com/xaptum/ecdaa/releases/tag/v1.0.0">v1.0.0</a>版本的安装包。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/xaptum/ecdaa/archive/v1.0.0.tar.gz</span><br><span class="line">tar -zxvf v1.0.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> ecdaa-1.0.0</span><br><span class="line"><span class="built_in">mkdir</span> -p build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提供四种可选的曲线算法（用逗号分隔） - &#x27;BN254&#x27;，&#x27;BN254CX&#x27;，&#x27;BLS383&#x27;，&#x27;FP256BN&#x27;</span></span><br><span class="line"><span class="built_in">export</span> ECDAA_CURVES=BN254,BN254CX,BLS383,FP256BN</span><br><span class="line"><span class="comment"># 它也提供了一些依赖的安装脚本</span></span><br><span class="line"><span class="built_in">mkdir</span> -p ./deps</span><br><span class="line"><span class="built_in">export</span> CMAKE_PREFIX_PATH=$(<span class="built_in">pwd</span>)/deps</span><br><span class="line"><span class="comment">## 使用提供的脚本编译AMCL</span></span><br><span class="line">../.travis/install-amcl.sh ./amcl ./deps <span class="variable">$&#123;ECDAA_CURVES&#125;</span></span><br><span class="line"><span class="comment">## 使用提供的脚本编译tpm2-tss (if building with TPM support)</span></span><br><span class="line">../.travis/install-tpm2-tss.sh ./tpm2-tss ./deps</span><br><span class="line"><span class="comment">## 安装IBM TPM模拟器。因为路径使用的是局部变量，因此不用担心和之前安装的TPM模拟器冲突</span></span><br><span class="line"><span class="comment">## xaptum需要使用配套的软件。。。</span></span><br><span class="line">../.travis/install-ibm-tpm2.sh ./ibm-tpm-simulator</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译</span></span><br><span class="line"><span class="comment"># 如果物理TPM芯片或TPM模拟器不可用，则ECDAA_TPM_SUPPORT必须设为OFF</span></span><br><span class="line"><span class="comment"># TEST_USE_TCP_TPM代表使用TCP socket来测试TPM</span></span><br><span class="line">cmake .. -DCMAKE_BUILD_TYPE=Release -DECDAA_CURVES=<span class="variable">$&#123;ECDAA_CURVES&#125;</span> -DECDAA_TPM_SUPPORT=ON -DTEST_USE_TCP_TPM=ON</span><br><span class="line"></span><br><span class="line">cmake --build .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动TPM模拟器</span></span><br><span class="line">../.travis/run-ibm-tpm2.sh ./ibm-tpm-simulator/ </span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成pub_key.txt和handle.txt以测试</span></span><br><span class="line">../.travis/prepare-tpm2.sh ./ibm-tpm-simulator/ ./test/tpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">ctest -V</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">cmake --build . --target install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置AMCL动态链接库路径</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:/root/ecdaa-1.0.0/build/amcl/build/lib</span><br><span class="line"></span><br><span class="line">ldconfig</span><br></pre></td></tr></table></figure>
+
+<h5 id="测试执行-1"><a href="#测试执行-1" class="headerlink" title="测试执行"></a>测试执行</h5><p>创建Group</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Issuer creates a new keypair</span></span><br><span class="line">ecdaa issuer genkeys -p issuer_public.bin -s issuer_private.bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Issuer分发issuer_public.bin给Verifier</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Verifier extracts group public key from Issuer&#x27;s public key</span></span><br><span class="line">ecdaa extractgpk -p issuer_public.bin -g group_public.bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Verifier持有group_public.bin</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220180958376.png" class="">
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220181118833.png" class="">
+
+<p>Join</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Member creates a keypair</span></span><br><span class="line">ecdaa member genkeys -p member_public.bin -s member_private.bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Member发送member_public.bin给Issuer</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Issuer creates a credential on that public key</span></span><br><span class="line">ecdaa issuer issuecredential -p member_public.bin -s issuer_private.bin -c member_credential.bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Issuer发送member_credential.bin给Member</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Member持有member_credential.bin和它自己的member_private.bin</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220183908791.png" class="">
+
+<p>Sign</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 0123456 | xxd -r -ps &gt; message.bin</span><br><span class="line"><span class="comment"># 用户将要被签名的信息存储在message.bin</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Member creates signature over the message</span></span><br><span class="line">ecdaa member sign -s member_private.bin -c member_credential.bin -m message.bin -g signature.bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Member将message.bin和signature.bin发送给Verifier</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185054715.png" class="">
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185229725.png" class="">
+
+<p>Verify</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Verifier checks signature</span></span><br><span class="line">ecdaa verify -g group_public.bin -m message.bin -s signature.bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用vim修改了签名的内容后再次Verify</span></span><br><span class="line">vim -b signature.bin</span><br><span class="line"></span><br><span class="line">ecdaa verify -g group_public.bin -m message.bin -s signature.bin</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185649179.png" class="">
+
+<img src="/2021/02/20/TPM2-0-ECDAA%E6%96%B9%E6%B3%95%E6%B5%8B%E8%AF%95/image-20210220185708470.png" class="">
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/399027/gpg-keyserver-receive-failed-server-indicated-a-failure">gpg: keyserver receive failed: Server indicated a failure</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://github.com/tpm2-software/tpm2-tools/blob/master/man/common/alg.md">tpm2-tools手册alg部分</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://fidoalliance.org/specs/fido-uaf-v1.1-id-20170202/fido-ecdaa-algorithm-v1.1-id-20170202.html">FIDO ECDAA</a></p>
+<p>[4] <a target="_blank" rel="noopener" href="https://github.com/xaptum/ecdaa">xaptum&#x2F;ecdaa</a></p>
+<p>[5] <a target="_blank" rel="noopener" href="https://blog.hansenpartnership.com/using-elliptic-curve-cryptography-with-tpm2/">Using Elliptic Curve Cryptography with TPM2</a></p>
+<p>[6] <a target="_blank" rel="noopener" href="http://cryptowiki.net/index.php?title=Direct_anonymous_attestation">Direct anonymous attestation</a></p>
+<p>[7] <a target="_blank" rel="noopener" href="https://github.com/ibm-research/ecdaa">ibm-research&#x2F;ecdaa</a></p>
+<p>[8] <a target="_blank" rel="noopener" href="https://github.com/UoS-SCCS/ecc-daa">UoS-SCCS&#x2F;ecc-daa</a></p>
+<p>[9] <a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmswtpm2/">ibmswtpm2</a></p>
+<p>[10] <a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmtpm20tss/">ibmtpm20tss</a></p>
+<p>[11] <a target="_blank" rel="noopener" href="https://github.com/UoS-SCCS/ecc-daa/blob/master/Notes/Code_notes.md">UoS-SCCS&#x2F;ecc-daa Code Notes</a></p>
+<p>[12] <a target="_blank" rel="noopener" href="https://github.com/UoS-SCCS/ecc-daa/blob/master/Notes/TPM_DAA_figures.pdf">TPM DAA Figures</a></p>
+<p>[13] <a target="_blank" rel="noopener" href="https://github.com/xaptum/ecdaa/blob/master/doc/BUILDING.md">xaptum&#x2F;ecdaa BUILDING.md</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>TPM2.0 ECDAA方法测试</p><p><a href="https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA方法测试/">https://rlyown.github.io/2021/02/20/TPM2-0-ECDAA方法测试/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Chaos Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-02-20</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2023-06-30</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/TPM/">TPM</a><a class="link-muted mr-2" rel="tag" href="/tags/Remote-Attestation/">Remote Attestation</a><a class="link-muted mr-2" rel="tag" href="/tags/DAA/">DAA</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/02/28/IBM-Attestation-Client-Server%E6%B5%8B%E8%AF%95/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">IBM Attestation Client Server测试</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/01/09/Nachos-Lab06-Shell%E5%AE%9E%E7%8E%B0/"><span class="level-item">Nachos Lab06 Shell实现</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comentarios</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "a3a45c62fc7f437a368737cf479a4dc3",
+            repo: "rlyown.github.io",
+            owner: "Rlyown",
+            clientID: "0dc9a246a80c473e7d31",
+            clientSecret: "08612f9152910db6288e61191a4221bad6aea8e5",
+            admin: ["Rlyown"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catálogo</h3><ul class="menu-list"><li><a class="level is-mobile" href="#VTPM"><span class="level-left"><span class="level-item">1</span><span class="level-item">VTPM</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#测试环境"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">测试环境</span></span></a></li><li><a class="level is-mobile" href="#TPM-直接匿名证明"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">TPM 直接匿名证明</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#tpm2-tools方式（未完成）"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">tpm2-tools方式（未完成）</span></span></a></li><li><a class="level is-mobile" href="#ibm-research-x2F-ecdaa方式（未完成）"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">ibm-research/ecdaa方式（未完成）</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#TPM-Emulator"><span class="level-left"><span class="level-item">2</span><span class="level-item">TPM-Emulator</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#测试环境-1"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">测试环境</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#TPM-Emulator安装测试"><span class="level-left"><span class="level-item">2.1.1</span><span class="level-item">TPM-Emulator安装测试</span></span></a></li></ul></li><li><a class="level is-mobile" href="#TPM-直接匿名证明-1"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">TPM 直接匿名证明</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#UoS-SCCS-x2F-ecc-daa方式"><span class="level-left"><span class="level-item">2.2.1</span><span class="level-item">UoS-SCCS/ecc-daa方式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#编译并配置"><span class="level-left"><span class="level-item">2.2.1.1</span><span class="level-item">编译并配置</span></span></a></li><li><a class="level is-mobile" href="#测试执行"><span class="level-left"><span class="level-item">2.2.1.2</span><span class="level-item">测试执行</span></span></a></li></ul></li><li><a class="level is-mobile" href="#xaptum-x2F-ecdaa方式"><span class="level-left"><span class="level-item">2.2.2</span><span class="level-item">xaptum/ecdaa方式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#编译并配置-1"><span class="level-left"><span class="level-item">2.2.2.1</span><span class="level-item">编译并配置</span></span></a></li><li><a class="level is-mobile" href="#测试执行-1"><span class="level-left"><span class="level-item">2.2.2.2</span><span class="level-item">测试执行</span></span></a></li></ul></li></ul></li></ul></li><li><a class="level is-mobile" href="#参考资料"><span class="level-left"><span class="level-item">3</span><span class="level-item">参考资料</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a><p class="is-size-7"><span>&copy; 2023 Chaos Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visitado por <span id="busuanzi_value_site_uv">0</span> usuarios</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-hans");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Volver arriba" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Este sitio web utiliza cookies para mejorar su experiencia.",
+          dismiss: "¡Entendido!",
+          allow: "Permitir cookies",
+          deny: "Descenso",
+          link: "Aprende más",
+          policy: "Política de cookies",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Teclea algo..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Teclea algo...","untitled":"(Sin título)","posts":"Entradas","pages":"Páginas","categories":"Categorías","tags":"Etiquetas"});
+        });</script></body></html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>qemu搭配rootfs启动虚拟机及其网络配置 - Real Own</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chaos Chen"><meta name="msapplication-TileImage" content="/img/f7.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chaos Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="通过内核与文件系统分离的方式启动QEMU虚拟机，并且为其配置网络"><meta property="og:type" content="blog"><meta property="og:title" content="qemu搭配rootfs启动虚拟机及其网络配置"><meta property="og:url" content="https://rlyown.github.io/2022/09/13/qemu%E6%90%AD%E9%85%8Drootfs%E5%90%AF%E5%8A%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8F%8A%E5%85%B6%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/"><meta property="og:site_name" content="Real Own"><meta property="og:description" content="通过内核与文件系统分离的方式启动QEMU虚拟机，并且为其配置网络"><meta property="og:image" content="https://rlyown.github.io/img/og_image.png"><meta property="article:published_time" content="2022-09-13T11:24:27.000Z"><meta property="article:modified_time" content="2023-06-30T08:53:26.392Z"><meta property="article:author" content="FatAngle"><meta property="article:tag" content="Linux"><meta property="article:tag" content="KVM/QEMU"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://rlyown.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rlyown.github.io/2022/09/13/qemu%E6%90%AD%E9%85%8Drootfs%E5%90%AF%E5%8A%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8F%8A%E5%85%B6%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/"},"headline":"qemu搭配rootfs启动虚拟机及其网络配置","image":["https://rlyown.github.io/img/og_image.png"],"datePublished":"2022-09-13T11:24:27.000Z","dateModified":"2023-06-30T08:53:26.392Z","author":{"@type":"Person","name":"FatAngle"},"publisher":{"@type":"Organization","name":"Real Own","logo":{"@type":"ImageObject","url":"https://rlyown.github.io/img/f7.png"}},"description":"通过内核与文件系统分离的方式启动QEMU虚拟机，并且为其配置网络"}</script><link rel="canonical" href="https://rlyown.github.io/2022/09/13/qemu%E6%90%AD%E9%85%8Drootfs%E5%90%AF%E5%8A%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8F%8A%E5%85%B6%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/"><link rel="alternate" href="/atom.xml" title="Real Own" type="application/atom+xml"><link rel="icon" href="/img/f7.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Rlyown/rlyown.github.io"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catálogo" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Buscar" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Publicado hace&nbsp;<time dateTime="2022-09-13T11:24:27.000Z" title="9/13/2022, 7:24:27 PM">2022-09-13</time></span><span class="level-item">Actualizado hace&nbsp;<time dateTime="2023-06-30T08:53:26.392Z" title="6/30/2023, 4:53:26 PM">2023-06-30</time></span><span class="level-item"> FatAngle </span><span class="level-item"><a class="link-muted" href="/categories/Operating-System/">Operating System</a></span><span class="level-item">16 minutes de lectura (Aproximadamente 2445 palabras)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visitas</span></div></div><h1 class="title is-3 is-size-4-mobile">qemu搭配rootfs启动虚拟机及其网络配置</h1><div class="content"><h2 id="rootfs配置"><a href="#rootfs配置" class="headerlink" title="rootfs配置"></a>rootfs配置</h2><p>相较于busybox 的方式，这种方式的优点在于系统结构完整，拥有完整的操作系统的使用体验，并且可以通过在host上将rootfs.img 镜像挂载到指定目录，实现在host上对rootfs的操作。此外，这种方式下，可以检测到qemu挂载的设备。</p>
+<ol>
+<li><p>在<a target="_blank" rel="noopener" href="http://cdimage.ubuntu.com/cdimage/ubuntu-base/releases/20.04/release/">Ubuntu-20.04-base</a> ，下载一个适用于Ubuntu的base包，其中包含一些基础的目录结构以及文件。</p>
+</li>
+<li><p>创建一个镜像来装载base包中的文件。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 大小可以稍大一些，避免出现空间不足的问题，这里实际创建大小约11G左右</span></span><br><span class="line"><span class="built_in">dd</span> <span class="keyword">if</span>=/dev/zero of=rootfs.img bs=10240 count=1M</span><br><span class="line"><span class="comment"># 对其进行格式化</span></span><br><span class="line">mkfs.ext4 -F -L linuxroot rootfs.img</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>挂载镜像，将<code>base</code>包放入镜像中。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 需要管理员权限</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> /mnt/tmpdir</span><br><span class="line"><span class="comment"># 挂载镜像到/mnt/tmpdir 目录</span></span><br><span class="line">sudo mount -o loop rootfs.img /mnt/tmpdir/</span><br><span class="line"><span class="comment"># 将下载好的base包解压到该目录中</span></span><br><span class="line">tar -zxvf ubuntu-base-20.04.1-base-amd64.tar.gz -C /mnt/tmpdir/</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>挂载好镜像以后，我们需要在<code>rootfs</code>上面安装软件，为了能够使用<code>apt</code>命令去安装软件，因此需要在<code>chroot</code>切换根目录环境中之前，把所需的<code>DNS</code>配置以及各种内存文件系统挂载上去。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /etc/resolv.conf /mnt/tmpdir/etc/</span><br><span class="line">mount -t proc /proc /mnt/tmpdir/proc</span><br><span class="line">mount -t sysfs /sys /mnt/tmpdir/sys</span><br><span class="line">mount -o <span class="built_in">bind</span> /dev /mnt/tmpdir/dev</span><br><span class="line">mount -o <span class="built_in">bind</span> /dev/pts /mnt/tmpdir/dev/pts</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换根文件系统，修改根目录</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">chroot</span> /mnt/tmpdir</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装必要的软件。以下的软件如果不全部安装，则在启动虚拟机时，会启动失败。以下软件全部安装大概需要800MB+的空间，因此最初的磁盘不能创建过小。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install language-pack-en-base sudo \</span><br><span class="line">    ssh net-tools ethtool wireless-tools \</span><br><span class="line">    ifupdown network-manager iputils-ping \</span><br><span class="line">    rsyslog htop vim xinit xorg alsa-utils \</span><br><span class="line">    --no-install-recommends</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置<code>root</code>密码，否则开机后无法登陆。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 根据提示为root用户设置密码</span></span><br><span class="line">passwd root</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果添加新用户，也可以使用这种方式设置新用户的密码。</span></span><br><span class="line">passwd &lt;user&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置必要的路由信息和主机名。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;host&quot; &gt; /etc/hostnames</span><br><span class="line">echo &quot;127.0.0.1 localhost&quot; &gt; /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p>至此基本的配置已经结束。如果有需要可以自行通过<code>apt-get</code>工具下载所需的软件，或是修改本地的配置文件。按下<code>Ctrl D</code>即可退出chroot的根目录，回到之前的根目录。</p>
+</li>
+<li><p>取消文件系统的挂载</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo umount /mnt/tmpdir/proc/</span><br><span class="line">sudo umount /mnt/tmpdir/sys/</span><br><span class="line">sudo umount /mnt/tmpdir/dev/pts/</span><br><span class="line">sudo umount /mnt/tmpdir/dev/</span><br><span class="line">sudo umount /mnt/tmpdir/</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>在配置好上述<code>rootfs</code>的基本配置后，通过下述命令可以启动<code>qemu</code>虚拟机</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 --enable-kvm -s -kernel ./vmlinux -hda ./rootfs.img -m 4096M -nographic -append <span class="string">&quot;root=/dev/sda console=ttyS0 <span class="variable">$CMDLINE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="qemu网络问题"><a href="#qemu网络问题" class="headerlink" title="qemu网络问题"></a>qemu网络问题</h2><p><code>qemu</code>常用的上网方式有两种： <code>Usermode Networking(默认上网方式，类似于VMware中的NAT)</code>、<code>Bridged Networking(桥接模式)</code>，前者的好处是不需要在<code>qemu</code>启动过程中进行任何设置，是默认的上网方式，但是缺点是主机无法<code>ping</code>通虚拟机；后者主机与虚拟机之间可以互相通信，但是需要在<code>host</code>上开启一个虚拟网卡，负责转发网络包，且需要在<code>qemu</code>启动命令行中进行参数设置。</p>
+<p><strong>虚拟机网卡问题</strong></p>
+<ul>
+<li><p>在打开虚拟机后，可能会出现使用命令 <code>ifconfig -a</code> 只有 <code>lo</code>开头的网卡。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 出现这样的情况是因为没有网卡驱动，因为qemu默认使用的e1000,但是内核的默认编译选项中相应的驱动配置方式为手动加载，因此在没有手动加载的前提下，没有驱动无法识别网卡。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 两种方式：</span></span><br><span class="line"><span class="comment"># 1- 将e1000 网卡驱动编译进内核</span></span><br><span class="line">	<span class="comment"># .config 文件原始状态</span></span><br><span class="line"> 	CONFIG_E1000=m</span><br><span class="line"> 	CONFIG_E1000E=m</span><br><span class="line"> </span><br><span class="line">	<span class="comment">#将其修改为自动编译进内核</span></span><br><span class="line"> 	CONFIG_E1000=y</span><br><span class="line"> 	CONFIG_E1000E=y</span><br><span class="line"><span class="comment"># 2- 将e1000网卡驱动手动加载</span></span><br><span class="line">	<span class="comment"># 下载e1000 网卡驱动</span></span><br><span class="line">	<span class="comment"># 解压后进入  e1000根目录/src</span></span><br><span class="line">	<span class="comment"># 执行 make install</span></span><br><span class="line">	</span><br><span class="line">	但是第二种方法会有一个问题，e1000 网卡驱动不适用于 kernel版本&gt;5.4的内核</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Usermode-Networking"><a href="#Usermode-Networking" class="headerlink" title="Usermode Networking"></a>Usermode Networking</h3><p>在上述过程后，启动的虚拟机可能会存在一个问题，无法上网，以下是可能出现的情况以及解决办法</p>
+<ul>
+<li><p>使用命令<code>ifconfig</code> 只有 <code>lo</code>网卡，但是使用<code>ifconfig -a</code>命令后，存在<code>en</code> 开头的网卡</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这种情况只是网卡（en开头）没有启用</span></span><br><span class="line"><span class="comment"># 1. 为网卡指定IP地址，并启动网卡</span></span><br><span class="line">sudo ifconfig &lt;网卡名&gt; &lt;ip地址&gt; up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 使用dhcp，为网卡自动分配IP地址</span></span><br><span class="line">sudo dhclient &lt;网卡名&gt;</span><br><span class="line">	<span class="comment"># 如果出现 dhclient： commond not found</span></span><br><span class="line">	<span class="comment"># 使用apt install isc-dhcp-client   安装dhclient</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>还有资料介绍，在<code>Ubuntu18</code> 之后，尤其是<code>20.04</code> ，<code>Ubuntu</code>已经切换到基于<code>YAML</code>的<code>Netplan</code>来配置网络。详细内容见链接:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40156289/article/details/109540518">https://blog.csdn.net/qq_40156289/article/details/109540518</a> , </p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/46544606">https://zhuanlan.zhihu.com/p/46544606</a> , </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/xiongyangg/article/details/110206220">https://blog.csdn.net/xiongyangg/article/details/110206220</a></p>
+<p>如果报错<code>netplan</code> 命令不存在,参考此链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zh-dream/p/13405799.html">https://www.cnblogs.com/zh-dream/p/13405799.html</a></p>
+</li>
+</ul>
+<p>经过上述的操作， 你会发现你的虚拟机已经可以上网了，但是会有一个问题，<code>host</code>无法<code>ping</code>通虚拟机。</p>
+<p>如果出现无法<code>ping</code>通百度的情况，请参考下面增加域名服务器地址的操作。</p>
+</li>
+</ul>
+<h3 id="Bridged-Networking"><a href="#Bridged-Networking" class="headerlink" title="Bridged Networking"></a>Bridged Networking</h3><ol>
+<li><p>安装桥接模式必备工具</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install bridge-utils     <span class="comment"># 虚拟网桥工具</span></span><br><span class="line">sudo apt-get install uml-utilities    <span class="comment"># UML（User-mode Linux）工具</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建一张 <code>TUN网卡</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一张网卡给指定的用户使用</span></span><br><span class="line">sudo tunctl -t &lt;网卡名&gt; -u &lt;用户名&gt;   </span><br><span class="line">例：sudo tunctl -t tap0 -u zxl</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将网卡操作命令设置为任何人都有权使用</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">chmod</span> 0666 /dev/net/tun</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为创建的网卡设置一个IP地址并启动网卡，不要与真实的IP 地址在同一个网段。例如，真实IP地址是<code>192.168.1.2</code>,那就给<code>tap0</code>设置为<code>192.168.2.1</code>:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ifconfig tap0 192.168.2.1 up</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>host</code>需要为虚拟机开启IP数据包转发，即在<code>192.168.1.* 网段</code>和<code>192.168.2.*网段</code>转发数据</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward <span class="comment"># 这里可能sudo的权限也不够，需要su切换到root用户进行操作。</span></span><br><span class="line">sudo iptables -t nat -A POSTROUTING -j MASQUERADE</span><br></pre></td></tr></table></figure>
+
+<p>到这里，<code>host</code>的配置完毕。</p>
+</li>
+<li><p>启动虚拟机：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 --enable-kvm -net nic -net tap,ifname=tap0,script=no,downscript=no -s -kernel ./vmlinux -hda ./rootfs.img -m 4096M -nographic -append <span class="string">&quot;root=/dev/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># -net nic    - 不加任何参数表示使用默认的网卡类型e1000</span></span><br><span class="line"><span class="string"># -net tap,ifname=tap0,script=no,downscript=no 	- 指定网卡接口名称为tap0，设置host在启动客户机时自动执行的网络配置脚本和宿主机在客户机关闭时自动执行的网路配置脚本。由于qemu中运行自主系统，因此这里不适用系统脚本，全部为no。</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>qemu网络通信方式：</p>
+<pre><code>1. User mode stack：用户协议栈方式，这种方式的大概原理是在 QEMU 进程中实现一个协议栈，这个协议栈可以被视为一个主机与虚拟机之间的 NAT 服务器，它负责将 QEMU 所模拟的系统网络请求转发到外部网卡上面，从而实现网络通信。但是不能将外面的请求转发到虚拟机内部，并且虚拟机 VLAN 中的每个接口必须放在 10.0.2.0 子网中。
+2. socket： 为 VLAN 创建套接字，并把多个 VLAN 连接起来。
+3. TAP/bridge：最重要的一种通信方式，我们想要实现 QEMU 虚拟机和外部通信就需要使用这种方式。
+4. VDE：也是用于连接 VLAN 的，如果没有 VLAN 连接需求基本用不到。
+</code></pre>
+</blockquote>
+</li>
+<li><p>进入虚拟机后，使用<code>ifconfig -a</code></p>
+</li>
+</ol>
+
+
+<p>   可以看到，ens3网卡没有启动。</p>
+<ol start="8">
+<li><p>给其设置一个IP地址，要求与<code>tap0</code> 在同一网段即可,例如 192.168.2.2 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ifconfig ens3 192.168.2.2 up</span><br></pre></td></tr></table></figure>
+
+<p>之后就能发现，宿主机与虚拟机可以相互<code>ping</code>通。但是此时，虚拟机还不能上外网，因为虚拟机缺少网关。现在把虚拟机的<code>tap0</code>的地址，<code>即192.168.2.1</code>，设置为虚拟机的网关：(有可能在设置网关之前，哪个都ping不通，但是没有影响，设置完网关即可。)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo route add default gw 192.168.2.1</span><br></pre></td></tr></table></figure>
+
+<p>这样，也可以ping通外网了，比如<code>ping 115.239.211.112</code>。但是<code>ping www.baidu.com</code>却不行，因为缺少DNS服务器！现在就把8.8.8.8指定为虚拟机的DNS服务器：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/resolv.conf</span><br><span class="line"><span class="comment"># 追加域名服务器地址</span></span><br><span class="line">	nameserver 8.8.8.8</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>写入文件之后，DNS立即生效了。现在，虚拟机既能上外网，又能与宿主机通信了！</p>
+<p>详细见：<a target="_blank" rel="noopener" href="https://zhou-yuxin.github.io/articles/2018/%E5%AE%89%E8%A3%85qemu-kvm%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE%E6%A1%A5%E6%8E%A5%E7%BD%91%E7%BB%9C/index.html">安装qemu-kvm以及配置桥接网络</a>，<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43769572/article/details/107588000">Linux下qemu网络配置（不使用en网络接口）</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://help.ubuntu.com/community/KVM/Networking#Bridged_Networking">KVM&#x2F;Networkin</a></li>
+<li><a target="_blank" rel="noopener" href="https://qemu-project.gitlab.io/qemu/">QEMU doc</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.owalle.com/2019/12/26/network-in-vm/">QEMU 虚拟机网络模式</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/OP-TEE/build/issues/103">qemu e1000网卡驱动</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_16097611/article/details/104965045">解决没有e1000 驱动</a></li>
+<li><a target="_blank" rel="noopener" href="https://codeleading.com/article/38093104674/">解决没有e1000驱动</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/anhuidelinger/article/details/10553139">下载安装e1000驱动</a></li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>qemu搭配rootfs启动虚拟机及其网络配置</p><p><a href="https://rlyown.github.io/2022/09/13/qemu搭配rootfs启动虚拟机及其网络配置/">https://rlyown.github.io/2022/09/13/qemu搭配rootfs启动虚拟机及其网络配置/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>FatAngle</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2022-09-13</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2023-06-30</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Linux/">Linux</a><a class="link-muted mr-2" rel="tag" href="/tags/KVM-QEMU/">KVM/QEMU</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/08/05/%E5%9C%A8Ubuntu%E4%B8%8B%E9%85%8D%E7%BD%AElibvirt/"><span class="level-item">在Ubuntu下配置libvirt</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comentarios</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "f4e0928f409e36e70df6424623e539d4",
+            repo: "rlyown.github.io",
+            owner: "Rlyown",
+            clientID: "0dc9a246a80c473e7d31",
+            clientSecret: "08612f9152910db6288e61191a4221bad6aea8e5",
+            admin: ["Rlyown"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catálogo</h3><ul class="menu-list"><li><a class="level is-mobile" href="#rootfs配置"><span class="level-left"><span class="level-item">1</span><span class="level-item">rootfs配置</span></span></a></li><li><a class="level is-mobile" href="#qemu网络问题"><span class="level-left"><span class="level-item">2</span><span class="level-item">qemu网络问题</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Usermode-Networking"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">Usermode Networking</span></span></a></li><li><a class="level is-mobile" href="#Bridged-Networking"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">Bridged Networking</span></span></a></li></ul></li><li><a class="level is-mobile" href="#参考资料"><span class="level-left"><span class="level-item">3</span><span class="level-item">参考资料</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/f7.png" alt="Real Own" height="28"></a><p class="is-size-7"><span>&copy; 2023 FatAngle</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visitado por <span id="busuanzi_value_site_uv">0</span> usuarios</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-hans");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Volver arriba" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Este sitio web utiliza cookies para mejorar su experiencia.",
+          dismiss: "¡Entendido!",
+          allow: "Permitir cookies",
+          deny: "Descenso",
+          link: "Aprende más",
+          policy: "Política de cookies",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Teclea algo..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Teclea algo...","untitled":"(Sin título)","posts":"Entradas","pages":"Páginas","categories":"Categorías","tags":"Etiquetas"});
+        });</script></body></html>
